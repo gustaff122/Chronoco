@@ -1,18 +1,23 @@
 {
   "name": "chronoco-api",
-  "$schema": "../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "chronoco-api/src",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/chronoco-api/src",
   "projectType": "application",
+  "tags": [],
   "targets": {
     "build": {
       "executor": "nx:run-commands",
       "options": {
         "command": "webpack-cli build",
-        "args": ["node-env=production"]
+        "args": [
+          "node-env=production"
+        ]
       },
       "configurations": {
         "development": {
-          "args": ["node-env=development"]
+          "args": [
+            "node-env=development"
+          ]
         }
       }
     },
@@ -20,7 +25,9 @@
       "continuous": true,
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
-      "dependsOn": ["build"],
+      "dependsOn": [
+        "build"
+      ],
       "options": {
         "buildTarget": "chronoco-api:build",
         "runBuildTargetDependencies": false
@@ -34,6 +41,5 @@
         }
       }
     }
-  },
-  "tags": []
+  }
 }
