@@ -8,12 +8,14 @@
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:application",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/apps/Chronoco",
         "index": "apps/Chronoco/src/index.html",
         "browser": "apps/Chronoco/src/main.ts",
-        "polyfills": ["zone.js"],
+        "polyfills": [],
         "tsConfig": "apps/Chronoco/tsconfig.app.json",
         "assets": [
           {
@@ -21,7 +23,9 @@
             "input": "apps/Chronoco/public"
           }
         ],
-        "styles": ["apps/Chronoco/src/styles.css"],
+        "styles": [
+          "apps/Chronoco/src/styles.css"
+        ],
         "scripts": [],
         "server": "apps/Chronoco/src/main.server.ts",
         "ssr": {

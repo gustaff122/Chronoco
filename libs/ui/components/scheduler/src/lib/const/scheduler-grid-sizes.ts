@@ -1,0 +1,1 @@
+export const SCHEDULER_HOUR_CAPTION_HEIGHT: number = 20;

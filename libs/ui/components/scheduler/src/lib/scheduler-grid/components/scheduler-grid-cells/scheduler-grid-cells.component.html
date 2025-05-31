@@ -1,0 +1,14 @@
+<div class="flex flex-col w-max pt-6">
+  @for (time of timeFrom() | libSchedulerGenerateHoursCaptions : timeTo(); track time; let isLastRow = $last) {
+    <div class="flex">
+      @for (room of rooms(); track room.name; let isLastColumn = $last) {
+        <lib-scheduler-grid-single-cell
+          [room]="room"
+          [time]="time"
+          [isLastRow]="isLastRow"
+          [isLastColumn]="isLastColumn"
+        />
+      }
+    </div>
+  }
+</div>

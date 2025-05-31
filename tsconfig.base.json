@@ -7,14 +7,43 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "strictNullChecks": false,
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2020", "dom"],
+    "lib": [
+      "es2020",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@chronoco-fe/const/*": [
+        "apps/Chronoco/src/app/const/*"
+      ],
+      "@chronoco-fe/core/*": [
+        "apps/Chronoco/src/app/core/*"
+      ],
+      "@chronoco-fe/models/*": [
+        "apps/Chronoco/src/app/models/*"
+      ],
+      "@chronoco-fe/shell/*": [
+        "apps/Chronoco/src/app/shell/*"
+      ],
+      "@chronoco-fe/stores/*": [
+        "apps/Chronoco/src/app/stores/*"
+      ],
+      "@chronoco-shared/models": [
+        "libs/shared/models/index.ts"
+      ],
+      "@chronoco/scheduler": [
+        "libs/ui/components/scheduler/src/index.ts"
+      ]
+    }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }
