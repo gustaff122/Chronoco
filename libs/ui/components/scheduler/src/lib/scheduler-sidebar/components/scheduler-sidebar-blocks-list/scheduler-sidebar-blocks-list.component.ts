@@ -19,6 +19,6 @@ export class SchedulerSidebarBlocksListComponent {
   private readonly dialog: Dialog = inject(Dialog);
 
   public openAddModal(): void {
-
+    
   }
 }
