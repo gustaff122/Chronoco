@@ -1,8 +1,8 @@
-import { Component, inject, Signal } from '@angular/core';
+import { Component, inject, Signal, viewChild } from '@angular/core';
 import { SchedulerGridComponentStore } from '../../scheduler-grid.component.store';
 import { IRoom } from '../../../models/i-room';
 import { SchedulerGenerateHoursCaptionsPipe } from '../../../pipes/scheduler-generate-hours-captions.pipe';
-import { SchedulerGridSingleCellComponent } from './scheduler-grid-single-cell/scheduler-grid-single-cell.component';
+import { SchedulerGridSingleCellComponent } from './components/scheduler-grid-single-cell/scheduler-grid-single-cell.component';
 
 @Component({
   selector: 'lib-scheduler-grid-cells',
@@ -14,6 +14,8 @@ import { SchedulerGridSingleCellComponent } from './scheduler-grid-single-cell/s
   styleUrl: './scheduler-grid-cells.component.css',
 })
 export class SchedulerGridCellsComponent {
+  public container: Signal<HTMLDivElement> = viewChild('container');
+
   private readonly gridComponentStore: SchedulerGridComponentStore = inject(SchedulerGridComponentStore);
 
   public readonly rooms: Signal<IRoom[]> = this.gridComponentStore.rooms;

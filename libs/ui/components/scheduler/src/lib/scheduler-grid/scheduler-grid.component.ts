@@ -5,14 +5,18 @@ import { SchedulerGridRowsComponent } from './components/scheduler-grid-rows/sch
 import { Component, inject, input, InputSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SchedulerGridCellsComponent } from './components/scheduler-grid-cells/scheduler-grid-cells.component';
+import { SchedulerGridBlocksComponent } from './components/scheduler-grid-blocks/scheduler-grid-blocks.component';
+import { SchedulerSelectingStore } from './stores/scheduler-selecting.store';
+import { SchedulerGridBlockHeightPipe } from '../pipes/scheduler-grid-block-height.pipe';
 
 @Component({
   selector: 'lib-scheduler-grid',
-  imports: [ CommonModule, SchedulerGridColumnsComponent, SchedulerGridRowsComponent, SchedulerGridCellsComponent ],
+  imports: [ CommonModule, SchedulerGridColumnsComponent, SchedulerGridRowsComponent, SchedulerGridCellsComponent, SchedulerGridBlocksComponent, SchedulerGridBlockHeightPipe ],
   templateUrl: './scheduler-grid.component.html',
   styleUrl: './scheduler-grid.component.css',
   providers: [
     SchedulerGridComponentStore,
+    SchedulerSelectingStore,
   ],
 })
 export class SchedulerGridComponent {

@@ -1,8 +1,11 @@
-<div class="py-6 px-6 border-b-2 border-gray-200 w-fit bg-white">
-  <div class="inline-flex h-20 min-w-full">
-    <div class="w-16 flex justify-start items-center">
-      <ng-icon class="text-3xl text-gray-400" name="heroClock"/>
+<div class="py-2 pr-6 border-b-2 border-gray-200 w-fit bg-white">
+  <div class="inline-flex h-12 min-w-full">
+    <div class="pl-6 sticky left-0 bg-white flex items-center">
+      <div class="w-16 flex justify-start items-center">
+        <ng-icon class="text-3xl text-gray-400" name="heroClock"/>
+      </div>
     </div>
+
 
     @for (room of rooms(); track room.name) {
       <lib-scheduler-grid-column-caption [room]="room"/>

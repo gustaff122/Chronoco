@@ -10,14 +10,12 @@ export class SchedulerHourHeightPipe implements PipeTransform {
     const [ fromH, fromM ] = row.split(':').map(Number);
     const from = new Date(0, 0, 0, fromH, fromM);
 
-    // Next full hour
     const nextHour = new Date(from);
     nextHour.setHours(from.getHours() + 1, 0, 0, 0);
 
     const [ toH, toM ] = timeTo.split(':').map(Number);
     const to = new Date(0, 0, 0, toH, toM);
 
-    // slotEnd = MIN(next hour, timeTo)
     const slotEnd = nextHour < to ? nextHour : to;
 
     const diffInMinutes = Math.max(0, (slotEnd.getTime() - from.getTime()) / 60000);

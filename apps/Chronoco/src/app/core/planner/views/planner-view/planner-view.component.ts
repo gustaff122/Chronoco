@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { IRoom, SchedulerGridComponent } from '@chronoco/scheduler';
+import { IRoom, SchedulerGridComponent, SchedulerHeaderComponent } from '@chronoco/scheduler';
 
 @Component({
   selector: 'app-planner-view',
   imports: [
     SchedulerGridComponent,
+    SchedulerHeaderComponent,
   ],
   templateUrl: './planner-view.component.html',
   styleUrl: './planner-view.component.css',

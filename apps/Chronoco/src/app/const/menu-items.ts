@@ -4,11 +4,21 @@ export const MENU_ITEMS: IMenuItem[] = [
   {
     name: 'Home',
     url: '/',
-    icon: 'heroHome',
+    icon: 'heroHomeSolid',
+  },
+  {
+    name: 'Wydarzenia',
+    url: '/events',
+    icon: 'heroFolderOpenSolid',
   },
   {
     name: 'Planer',
     url: '/planner',
-    icon: 'heroCalendar',
+    icon: 'heroCalendarSolid',
+  },
+  {
+    name: 'Użytkownicy',
+    url: '/users',
+    icon: 'heroUserGroupSolid',
   },
 ];

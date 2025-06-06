@@ -1,8 +1,8 @@
 import { Component, inject, input, InputSignal, Signal } from '@angular/core';
-import { SchedulerHourHeightPipe } from '../../../../pipes/scheduler-hour-height.pipe';
-import { IRoom } from '../../../../models/i-room';
-import { SchedulerGridComponentStore } from '../../../scheduler-grid.component.store';
-import { SCHEDULER_HOUR_CAPTION_HEIGHT } from '../../../../const/scheduler-grid-sizes';
+import { SchedulerHourHeightPipe } from '../../../../../pipes/scheduler-hour-height.pipe';
+import { IRoom } from '../../../../../models/i-room';
+import { SchedulerGridComponentStore } from '../../../../scheduler-grid.component.store';
+import { SCHEDULER_HOUR_CAPTION_HEIGHT } from '../../../../../const/scheduler-grid-sizes';
 
 @Component({
   selector: 'lib-scheduler-grid-single-cell',
