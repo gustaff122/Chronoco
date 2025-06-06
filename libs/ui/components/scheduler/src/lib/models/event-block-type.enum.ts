@@ -1,0 +1,9 @@
+export enum EventBlockType {
+  LECTURE = 'LECTURE',
+  TECHNICAL = 'TECHNICAL',
+  PANEL = 'PANEL',
+  MOVIE = 'MOVIE',
+  CONCERT = 'CONCERT',
+  COMPETITION = 'COMPETITION',
+  OTHER = 'OTHER',
+}

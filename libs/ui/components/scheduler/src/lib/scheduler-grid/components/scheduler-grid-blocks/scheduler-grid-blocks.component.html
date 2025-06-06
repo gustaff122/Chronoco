@@ -8,7 +8,6 @@
   @for (block of blockStyle(); track block.id; let i = $index) {
     <div class="event-block"
          [ngStyle]="block.style"
-
     >
       <lib-scheduler-grid-single-block [block]="block.block"/>
     </div>
