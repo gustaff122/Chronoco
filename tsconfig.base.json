@@ -28,17 +28,20 @@
       "@chronoco-fe/models/*": [
         "apps/Chronoco/src/app/models/*"
       ],
+      "@chronoco-fe/modals/*": [
+        "apps/Chronoco/src/app/modals/*"
+      ],
       "@chronoco-fe/shell/*": [
         "apps/Chronoco/src/app/shell/*"
       ],
       "@chronoco-fe/stores/*": [
         "apps/Chronoco/src/app/stores/*"
       ],
-      "@chronoco-shared/models": [
-        "libs/shared/models/index.ts"
+      "@chronoco-fe/ui/*": [
+        "apps/Chronoco/src/app/ui/*"
       ],
-      "@chronoco/scheduler": [
-        "libs/ui/components/scheduler/src/index.ts"
+      "@chronoco-fe/pipes/*": [
+        "apps/Chronoco/src/app/pipes/*"
       ]
     }
   },

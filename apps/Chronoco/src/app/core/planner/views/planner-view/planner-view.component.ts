@@ -1,5 +1,9 @@
 import { Component } from '@angular/core';
-import { IRoom, SchedulerGridComponent, SchedulerHeaderComponent, SchedulerSidebarComponent } from '@chronoco/scheduler';
+import { SchedulerHeaderComponent } from './components/scheduler-header/scheduler-header.component';
+import { SchedulerGridComponent } from './components/scheduler-grid/scheduler-grid.component';
+import { SchedulerSidebarComponent } from './components/scheduler-sidebar/scheduler-sidebar.component';
+import { SchedulerBlocksStore } from './components/scheduler-grid/stores/scheduler-blocks/scheduler-blocks.store';
+import { IRoom } from '@chronoco-fe/models/i-room';
 
 @Component({
   selector: 'app-planner-view',
@@ -10,6 +14,9 @@ import { IRoom, SchedulerGridComponent, SchedulerHeaderComponent, SchedulerSideb
   ],
   templateUrl: './planner-view.component.html',
   styleUrl: './planner-view.component.css',
+  providers: [
+    SchedulerBlocksStore,
+  ],
 })
 export class PlannerViewComponent {
   public rooms: IRoom[] = [

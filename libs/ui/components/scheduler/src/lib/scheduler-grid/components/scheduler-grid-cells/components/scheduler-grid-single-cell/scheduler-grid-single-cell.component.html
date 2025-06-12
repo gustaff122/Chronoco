@@ -1,8 +1,0 @@
-<div
-  class="w-36 border-t-2 border-gray-100"
-  [class.border-l-2]="!isLastRow()"
-  [class.border-r-2]="isLastColumn() && !isLastRow()"
-  [style.height.px]="isLastRow() ? SCHEDULER_HOUR_CAPTION_HEIGHT : (time() | libSchedulerHourHeight : timeTo())"
->
-
-</div>
