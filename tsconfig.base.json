@@ -25,11 +25,14 @@
       "@chronoco-fe/core/*": [
         "apps/Chronoco/src/app/core/*"
       ],
+      "@chronoco-fe/modals/*": [
+        "apps/Chronoco/src/app/modals/*"
+      ],
       "@chronoco-fe/models/*": [
         "apps/Chronoco/src/app/models/*"
       ],
-      "@chronoco-fe/modals/*": [
-        "apps/Chronoco/src/app/modals/*"
+      "@chronoco-fe/pipes/*": [
+        "apps/Chronoco/src/app/pipes/*"
       ],
       "@chronoco-fe/shell/*": [
         "apps/Chronoco/src/app/shell/*"
@@ -39,9 +42,6 @@
       ],
       "@chronoco-fe/ui/*": [
         "apps/Chronoco/src/app/ui/*"
-      ],
-      "@chronoco-fe/pipes/*": [
-        "apps/Chronoco/src/app/pipes/*"
       ]
     }
   },
