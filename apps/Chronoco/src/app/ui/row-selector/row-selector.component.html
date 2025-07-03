@@ -1,0 +1,10 @@
+<div class="bg-gray-100 px-2 py-1.5 rounded-xl flex">
+  @for (option of options(); track option.value) {
+    <span (click)="writeValue(option)"
+          class="w-24 text-center rounded-lg py-1 text-sm text-gray-700 cursor-pointer
+          {{ (option.value === selectedValue?.value && option.display === selectedValue?.display) && 'bg-white shadow font-medium' }}"
+    >
+      {{ option.display }}
+    </span>
+  }
+</div>
