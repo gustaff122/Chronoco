@@ -1,12 +1,11 @@
-import { Component, computed, ElementRef, inject, OnInit, Signal, ViewChild } from '@angular/core';
-import { SchedulerSelectingStore } from '../../stores/scheduler-selecting.store';
+import { Component, computed, ElementRef, inject, OnDestroy, Signal, viewChild } from '@angular/core';
 import { SchedulerGridSingleBlockComponent } from './components/scheduler-grid-single-block/scheduler-grid-single-block.component';
 import { NgStyle } from '@angular/common';
-import { EventBlockType } from '@chronoco-fe/models/event-block-type.enum';
 import { SchedulerGridComponentStore } from '../../scheduler-grid.component.store';
-import { SchedulerBlocksStore } from '../../stores/scheduler-blocks/scheduler-blocks.store';
 import { IRoom } from '@chronoco-fe/models/i-room';
-import { IEventBlockPosition, IRenderableBlock } from '@chronoco-fe/models/i-event-block';
+import { IEventBlock, IEventBlockPosition, IRenderableBlock } from '@chronoco-fe/models/i-event-block';
+import { SchedulerEventInstancesStore } from '../../stores/scheduler-event-instances.store';
+import { SchedulerLegendStore } from '../../stores/scheduler-legend.store';
 
 enum InteractionMode {
   None,
@@ -18,6 +17,12 @@ enum InteractionMode {
   Creating
 }
 
+interface AutoScrollConfig {
+  margin: number;
+  speed: number;
+  intervalMs: number;
+}
+
 @Component({
   selector: 'app-scheduler-grid-blocks',
   templateUrl: './scheduler-grid-blocks.component.html',
@@ -25,26 +30,26 @@ enum InteractionMode {
   imports: [
     NgStyle,
     SchedulerGridSingleBlockComponent,
+
   ],
 })
-export class SchedulerGridBlocksComponent implements OnInit {
-  public ngOnInit(): void {
-    const item = this.blocksStore.createLegendDefinition('Wiedźmin 4', EventBlockType.LECTURE);
-    this.blocksStore.selectLegendForDrawing(item.id);
-  }
+export class SchedulerGridBlocksComponent implements OnDestroy {
+  public container: Signal<ElementRef> = viewChild('container');
 
-  @ViewChild('container', { static: true }) container!: ElementRef;
-
-  private readonly schedulerSelectingStore = inject(SchedulerSelectingStore);
   private readonly gridStore = inject(SchedulerGridComponentStore);
-  private readonly blocksStore = inject(SchedulerBlocksStore);
+  private readonly eventInstancesStore: SchedulerEventInstancesStore = inject(SchedulerEventInstancesStore);
+  private readonly legendStore: SchedulerLegendStore = inject(SchedulerLegendStore);
 
   public readonly rooms: Signal<IRoom[]> = this.gridStore.rooms;
 
-  private readonly gridSizeX = 144;
-  private readonly gridSizeY = 15;
   private readonly edgeThreshold = 10;
   private readonly maxRow = 24 * 4;
+
+  private readonly autoScrollConfig: AutoScrollConfig = {
+    margin: 50,
+    speed: 15,
+    intervalMs: 16,
+  };
 
   private mode: InteractionMode = InteractionMode.None;
   private activeInstanceId: string | null = null;
@@ -52,21 +57,34 @@ export class SchedulerGridBlocksComponent implements OnInit {
   private startMouseX = 0;
   private startMouseY = 0;
   private originalPosition: IEventBlockPosition | null = null;
+  private hasCollision = false;
 
-  // Dostęp do danych ze store
-  public readonly eventInstances = this.blocksStore.eventInstances;
-  public readonly selectedLegend = this.blocksStore.selectedLegendBlock;
+  private documentMouseMoveListener?: (event: MouseEvent) => void;
+  private documentMouseUpListener?: (event: MouseEvent) => void;
+
+  private autoScrollIntervalId: number | null = null;
+  private currentScrollDirection = { x: 0, y: 0 };
+  private scrollContainer: HTMLElement | null = null;
+
+  public readonly eventInstances: Signal<IRenderableBlock[]> = this.eventInstancesStore.eventInstances;
+  public readonly selectedLegend: Signal<IEventBlock | null> = this.legendStore.selectedLegendBlock;
+
+  public ngOnDestroy(): void {
+    this.cleanup();
+  }
+
+  private cleanup(): void {
+    this.detachDocumentListeners();
+    this.stopAutoScroll();
+  }
 
   public startSelectingHandler(event: MouseEvent) {
     const mousePos = this.getMousePosition(event);
     if (!mousePos) return;
 
-    const clickedInstances = this.blocksStore.findEventInstancesAtPosition(
+    const clickedInstances = this.eventInstancesStore.findAtPosition(
       mousePos.x,
       mousePos.y,
-      this.gridSizeX,
-      this.gridSizeY,
-      this.rooms(),
       this.timeToIndex.bind(this),
     );
 
@@ -77,16 +95,144 @@ export class SchedulerGridBlocksComponent implements OnInit {
     } else {
       this.createNewInstance(mousePos, event);
     }
+
+    this.initializeScrollContainer();
+    this.attachDocumentListeners();
+  }
+
+  private initializeScrollContainer() {
+    this.scrollContainer = document.querySelector('.scheduler-grid') as HTMLElement;
+    if (!this.scrollContainer) {
+      console.warn('Scroll container .scheduler-grid not found');
+      const container = this.container();
+      if (container) {
+        this.scrollContainer = container.nativeElement;
+      }
+    }
+  }
+
+  private attachDocumentListeners(): void {
+    this.detachDocumentListeners();
+
+    this.documentMouseMoveListener = (event: MouseEvent) => {
+      this.selectingHandler(event);
+    };
+
+    this.documentMouseUpListener = () => {
+      this.stopSelectingHandler();
+    };
+
+    document.addEventListener('mousemove', this.documentMouseMoveListener);
+    document.addEventListener('mouseup', this.documentMouseUpListener);
+  }
+
+  private detachDocumentListeners() {
+    if (this.documentMouseMoveListener) {
+      document.removeEventListener('mousemove', this.documentMouseMoveListener);
+      this.documentMouseMoveListener = undefined;
+    }
+
+    if (this.documentMouseUpListener) {
+      document.removeEventListener('mouseup', this.documentMouseUpListener);
+      this.documentMouseUpListener = undefined;
+    }
+  }
+
+  // Improved autoscroll implementation
+  private updateAutoScroll(clientX: number, clientY: number) {
+    if (!this.scrollContainer) {
+      return;
+    }
+
+    const rect = this.scrollContainer.getBoundingClientRect();
+    const { margin } = this.autoScrollConfig;
+
+    let scrollX = 0;
+    let scrollY = 0;
+
+    const distanceFromLeft = clientX - rect.left;
+    const distanceFromRight = rect.right - clientX;
+
+    if (distanceFromLeft < margin && distanceFromLeft >= 0) {
+      scrollX = -this.autoScrollConfig.speed * (1 - distanceFromLeft / margin);
+    } else if (distanceFromRight < margin && distanceFromRight >= 0) {
+      scrollX = this.autoScrollConfig.speed * (1 - distanceFromRight / margin);
+    } else if (clientX < rect.left) {
+      scrollX = -this.autoScrollConfig.speed;
+    } else if (clientX > rect.right) {
+      scrollX = this.autoScrollConfig.speed;
+    }
+
+    const distanceFromTop = clientY - rect.top;
+    const distanceFromBottom = rect.bottom - clientY;
+
+    if (distanceFromTop < margin && distanceFromTop >= 0) {
+      scrollY = -this.autoScrollConfig.speed * (1 - distanceFromTop / margin);
+    } else if (distanceFromBottom < margin && distanceFromBottom >= 0) {
+      scrollY = this.autoScrollConfig.speed * (1 - distanceFromBottom / margin);
+    } else if (clientY < rect.top) {
+      scrollY = -this.autoScrollConfig.speed;
+    } else if (clientY > rect.bottom) {
+      scrollY = this.autoScrollConfig.speed;
+    }
+
+    this.setScrollDirection(scrollX, scrollY);
+  }
+
+  private setScrollDirection(x: number, y: number) {
+    const newDirection = { x: Math.round(x), y: Math.round(y) };
+
+    if (newDirection.x !== this.currentScrollDirection.x ||
+      newDirection.y !== this.currentScrollDirection.y) {
+
+      this.currentScrollDirection = newDirection;
+
+      if (newDirection.x === 0 && newDirection.y === 0) {
+        this.stopAutoScroll();
+      } else {
+        this.startAutoScroll();
+      }
+    }
+  }
+
+  private startAutoScroll() {
+    if (this.autoScrollIntervalId !== null) {
+      return;
+    }
+
+    this.autoScrollIntervalId = window.setInterval(() => {
+      if (!this.scrollContainer) {
+        this.stopAutoScroll();
+        return;
+      }
+
+      if (this.currentScrollDirection.x !== 0 || this.currentScrollDirection.y !== 0) {
+        this.scrollContainer.scrollBy(
+          this.currentScrollDirection.x,
+          this.currentScrollDirection.y,
+        );
+      }
+    }, this.autoScrollConfig.intervalMs);
+  }
+
+  public stopAutoScroll() {
+    if (this.autoScrollIntervalId !== null) {
+      clearInterval(this.autoScrollIntervalId);
+      this.autoScrollIntervalId = null;
+    }
+    this.currentScrollDirection = { x: 0, y: 0 };
   }
 
   public selectingHandler(event: MouseEvent) {
-    if (this.mode === InteractionMode.None || !this.activeInstanceId || !this.originalPosition) return;
+    if (this.mode === InteractionMode.None || !this.activeInstanceId) return;
 
     const mousePos = this.getMousePosition(event);
     if (!mousePos) return;
 
     const deltaX = mousePos.x - this.startMouseX;
     const deltaY = mousePos.y - this.startMouseY;
+
+    this.updateAutoScroll(event.clientX, event.clientY);
 
     switch (this.mode) {
       case InteractionMode.Dragging:
@@ -111,18 +257,32 @@ export class SchedulerGridBlocksComponent implements OnInit {
   }
 
   public stopSelectingHandler() {
+    if (this.hasCollision && this.originalPosition && this.activeInstanceId) {
+
+      if (this.mode === InteractionMode.Creating) {
+        this.eventInstancesStore.delete(this.activeInstanceId);
+      } else {
+        this.updateActiveInstance(this.originalPosition);
+      }
+    }
+
     this.mode = InteractionMode.None;
     this.activeInstanceId = null;
     this.originalPosition = null;
+    this.hasCollision = false;
+
+    this.cleanup();
   }
 
   private getMousePosition(event: MouseEvent): { x: number, y: number } | null {
-    if (!this.container?.nativeElement) return null;
+    const container = this.container();
+    if (!container) return null;
 
-    const rect = this.container.nativeElement.getBoundingClientRect();
+    const rect = container.nativeElement.getBoundingClientRect();
+
     return {
-      x: event.clientX - rect.left + this.container.nativeElement.scrollLeft,
-      y: event.clientY - rect.top + this.container.nativeElement.scrollTop,
+      x: event.clientX - rect.left + container.nativeElement.scrollLeft,
+      y: event.clientY - rect.top + container.nativeElement.scrollTop,
     };
   }
 
@@ -132,11 +292,8 @@ export class SchedulerGridBlocksComponent implements OnInit {
     this.startMouseX = mousePos.x;
     this.startMouseY = mousePos.y;
 
-    const style = this.blocksStore.getPositionStyle(
+    const style = this.eventInstancesStore.getPositionStyle(
       instance.position,
-      this.gridSizeX,
-      this.gridSizeY,
-      this.rooms(),
       this.timeToIndex.bind(this),
     );
 
@@ -158,48 +315,55 @@ export class SchedulerGridBlocksComponent implements OnInit {
     }
 
     event.preventDefault();
+    event.stopPropagation();
   }
 
   private createNewInstance(mousePos: { x: number, y: number }, event: MouseEvent) {
-    // Sprawdź czy jest wybrana legenda
     const selectedLegend = this.selectedLegend();
+
     if (!selectedLegend) {
-      console.warn('Nie wybrano typu eventu do rysowania');
       return;
     }
 
-    const colIndex = Math.floor(mousePos.x / this.gridSizeX);
-    const rowIndex = Math.floor(mousePos.y / this.gridSizeY);
+    const colIndex = Math.floor(mousePos.x / this.gridStore.gridSizeX());
+    const rowIndex = Math.floor(mousePos.y / this.gridStore.gridSizeY());
 
     const rooms = this.rooms();
-    if (colIndex < 0 || colIndex >= rooms.length) return;
+    if (colIndex < 0 || colIndex >= rooms.length) {
+      console.warn('Column index out of bounds:', colIndex);
+      return;
+    }
 
-    const newPosition: IEventBlockPosition = {
-      rooms: [ rooms[colIndex].name ],
-      startTime: this.indexToTime(rowIndex),
-      endTime: this.indexToTime(rowIndex + 1),
+    const newPosition: Omit<IRenderableBlock, 'id' | 'positionIndex'> = {
+      legendId: selectedLegend.id,
+      position: {
+        rooms: [ rooms[colIndex].name ],
+        startTime: this.indexToTime(rowIndex),
+        endTime: this.indexToTime(rowIndex + 1),
+      },
+      legend: selectedLegend,
     };
 
-    const newInstance = this.blocksStore.createEventInstance(newPosition);
+    const newInstance = this.eventInstancesStore.create(newPosition);
     if (!newInstance) {
-      console.warn('Nie można utworzyć instancji eventu - prawdopodobnie konflikt');
       return;
     }
 
     this.activeInstanceId = newInstance.id;
-    this.originalPosition = { ...newPosition };
+    this.originalPosition = { ...newPosition.position };
     this.startMouseX = mousePos.x;
     this.startMouseY = mousePos.y;
     this.mode = InteractionMode.Creating;
 
     event.preventDefault();
+    event.stopPropagation();
   }
 
   private handleDragging(deltaX: number, deltaY: number) {
     if (!this.originalPosition || !this.activeInstanceId) return;
 
-    const deltaCols = Math.round(deltaX / this.gridSizeX);
-    const deltaRows = Math.round(deltaY / this.gridSizeY);
+    const deltaCols = Math.round(deltaX / this.gridStore.gridSizeX());
+    const deltaRows = Math.round(deltaY / this.gridStore.gridSizeY());
 
     const rooms = this.rooms();
     const startRoomIdx = rooms.findIndex(r => r.name === this.originalPosition.rooms[0]);
@@ -221,17 +385,19 @@ export class SchedulerGridBlocksComponent implements OnInit {
 
     const newEndRow = newStartRow + duration;
 
-    this.updateActiveInstance({
+    const newPosition = {
       rooms: selectedRooms,
       startTime: this.indexToTime(newStartRow),
       endTime: this.indexToTime(newEndRow),
-    });
+    };
+
+    this.updateActiveInstance(newPosition);
   }
 
   private handleResizeTop(deltaY: number) {
     if (!this.originalPosition || !this.activeInstanceId) return;
 
-    const deltaRows = Math.round(deltaY / this.gridSizeY);
+    const deltaRows = Math.round(deltaY / this.gridStore.gridSizeY());
     const originalStartRow = this.timeToIndex(this.originalPosition.startTime);
     const originalEndRow = this.timeToIndex(this.originalPosition.endTime);
 
@@ -241,10 +407,12 @@ export class SchedulerGridBlocksComponent implements OnInit {
     if (newStartRow >= originalEndRow) {
       this.mode = InteractionMode.ResizingBottom;
 
-      this.updateActiveInstance({
+      const newPosition = {
         startTime: this.originalPosition.endTime,
         endTime: this.indexToTime(Math.min(this.maxRow, newStartRow + 1)),
-      });
+      };
+
+      this.updateActiveInstance(newPosition);
 
       this.originalPosition = {
         ...this.originalPosition,
@@ -252,16 +420,18 @@ export class SchedulerGridBlocksComponent implements OnInit {
         endTime: this.indexToTime(newStartRow + 1),
       };
     } else {
-      this.updateActiveInstance({
+      const newPosition = {
         startTime: this.indexToTime(newStartRow),
-      });
+      };
+
+      this.updateActiveInstance(newPosition);
     }
   }
 
   private handleResizeBottom(deltaY: number) {
     if (!this.originalPosition || !this.activeInstanceId) return;
 
-    const deltaRows = Math.round(deltaY / this.gridSizeY);
+    const deltaRows = Math.round(deltaY / this.gridStore.gridSizeY());
     const originalStartRow = this.timeToIndex(this.originalPosition.startTime);
     const originalEndRow = this.timeToIndex(this.originalPosition.endTime);
 
@@ -271,10 +441,12 @@ export class SchedulerGridBlocksComponent implements OnInit {
     if (newEndRow <= originalStartRow) {
       this.mode = InteractionMode.ResizingTop;
 
-      this.updateActiveInstance({
+      const newPosition = {
         startTime: this.indexToTime(Math.max(0, newEndRow - 1)),
         endTime: this.originalPosition.startTime,
-      });
+      };
+
+      this.updateActiveInstance(newPosition);
 
       this.originalPosition = {
         ...this.originalPosition,
@@ -282,9 +454,11 @@ export class SchedulerGridBlocksComponent implements OnInit {
         endTime: this.originalPosition.startTime,
       };
     } else {
-      this.updateActiveInstance({
+      const newPosition = {
         endTime: this.indexToTime(newEndRow),
-      });
+      };
+
+      this.updateActiveInstance(newPosition);
     }
   }
 
@@ -296,7 +470,7 @@ export class SchedulerGridBlocksComponent implements OnInit {
     const leftmostRoomIdx = Math.min(...originalRooms.map(r => rooms.findIndex(room => room.name === r)));
     const rightmostRoomIdx = Math.max(...originalRooms.map(r => rooms.findIndex(room => room.name === r)));
 
-    const deltaCols = Math.round(deltaX / this.gridSizeX);
+    const deltaCols = Math.round(deltaX / this.gridStore.gridSizeX());
     let newLeftIdx = leftmostRoomIdx + deltaCols;
 
     newLeftIdx = Math.max(0, newLeftIdx);
@@ -304,9 +478,11 @@ export class SchedulerGridBlocksComponent implements OnInit {
 
     const selectedRooms = rooms.slice(newLeftIdx, rightmostRoomIdx + 1).map(r => r.name);
 
-    this.updateActiveInstance({
+    const newPosition = {
       rooms: selectedRooms,
-    });
+    };
+
+    this.updateActiveInstance(newPosition);
   }
 
   private handleResizeRight(deltaX: number) {
@@ -317,7 +493,7 @@ export class SchedulerGridBlocksComponent implements OnInit {
     const leftmostRoomIdx = Math.min(...originalRooms.map(r => rooms.findIndex(room => room.name === r)));
     const rightmostRoomIdx = Math.max(...originalRooms.map(r => rooms.findIndex(room => room.name === r)));
 
-    const deltaCols = Math.round(deltaX / this.gridSizeX);
+    const deltaCols = Math.round(deltaX / this.gridStore.gridSizeX());
     let newRightIdx = rightmostRoomIdx + deltaCols;
 
     newRightIdx = Math.min(rooms.length - 1, newRightIdx);
@@ -325,20 +501,23 @@ export class SchedulerGridBlocksComponent implements OnInit {
 
     const selectedRooms = rooms.slice(leftmostRoomIdx, newRightIdx + 1).map(r => r.name);
 
-    this.updateActiveInstance({
+    const newPosition = {
       rooms: selectedRooms,
-    });
+    };
+
+    this.updateActiveInstance(newPosition);
   }
 
   private handleCreating(deltaX: number, deltaY: number) {
     if (!this.originalPosition || !this.activeInstanceId) return;
 
+
     const rooms = this.rooms();
     const originalColIndex = rooms.findIndex(r => r.name === this.originalPosition.rooms[0]);
     const originalRowIndex = this.timeToIndex(this.originalPosition.startTime);
 
-    const deltaCol = Math.round(deltaX / this.gridSizeX);
-    const deltaRow = Math.round(deltaY / this.gridSizeY);
+    const deltaCol = Math.round(deltaX / this.gridStore.gridSizeX());
+    const deltaRow = Math.round(deltaY / this.gridStore.gridSizeY());
 
     let startCol = originalColIndex;
     let endCol = originalColIndex + deltaCol;
@@ -366,17 +545,19 @@ export class SchedulerGridBlocksComponent implements OnInit {
       endRow = startRow + 1;
     }
 
-    this.updateActiveInstance({
+    const newPosition = {
       rooms: selectedRooms,
       startTime: this.indexToTime(startRow),
       endTime: this.indexToTime(endRow),
-    });
+    };
+
+    this.updateActiveInstance(newPosition);
   }
 
   private updateActiveInstance(updates: Partial<IEventBlockPosition>) {
     if (!this.activeInstanceId) return;
 
-    this.blocksStore.updateEventInstance(this.activeInstanceId, updates);
+    this.eventInstancesStore.update(this.activeInstanceId, updates);
   }
 
   private timeToIndex(time: string): number {
@@ -392,11 +573,8 @@ export class SchedulerGridBlocksComponent implements OnInit {
 
   public readonly blockStyle = computed(() => {
     return this.eventInstances().map((instance) => {
-      const style = this.blocksStore.getPositionStyle(
+      const style = this.eventInstancesStore.getPositionStyle(
         instance.position,
-        this.gridSizeX,
-        this.gridSizeY,
-        this.rooms(),
         this.timeToIndex.bind(this),
       );
 
@@ -409,23 +587,10 @@ export class SchedulerGridBlocksComponent implements OnInit {
           width: `${style.width}px`,
           position: 'absolute',
           userSelect: 'none',
-          cursor: 'pointer',
+          zIndex: 1,
         },
         instance: instance,
       };
     });
   });
-
-  // Publiczne metody dla zewnętrznych komponentów
-  public duplicateInstance(instanceId: string): boolean {
-    return this.blocksStore.duplicateEventInstance(instanceId) !== null;
-  }
-
-  public deleteInstance(instanceId: string): boolean {
-    return this.blocksStore.deleteEventInstance(instanceId);
-  }
-
-  public checkConflict(position: IEventBlockPosition, excludeInstanceId?: string): boolean {
-    return this.blocksStore.hasConflict(position, excludeInstanceId);
-  }
 }

@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } 
 import { EventBlockType } from '../../models/event-block-type.enum';
 import { SchedulerTranslateBlockTypePipe } from '../../pipes/scheduler-translate-block-type.pipe';
 import { ModalComponent } from '../../ui/modal/modal.component';
-import { SchedulerBlocksStore } from '@chronoco-fe/core/planner/views/planner-view/components/scheduler-grid/stores/scheduler-blocks/scheduler-blocks.store';
+import { SchedulerLegendStore } from '@chronoco-fe/core/planner/views/planner-view/components/scheduler-grid/stores/scheduler-legend.store';
 
 interface IAddLegendForm {
   name: FormControl<string>;
@@ -21,7 +21,7 @@ interface IAddLegendForm {
   styleUrl: './scheduler-add-edit-block-modal.component.css',
 })
 export class SchedulerAddEditBlockModalComponent implements OnInit {
-  private readonly blocksStore: SchedulerBlocksStore = inject(SchedulerBlocksStore);
+  private readonly legendStore: SchedulerLegendStore = inject(SchedulerLegendStore);
   private readonly formBuilder: FormBuilder = inject(FormBuilder);
 
   public readonly blockTypes: Signal<EventBlockType[]> = computed(() => Object.values(EventBlockType));
@@ -34,7 +34,7 @@ export class SchedulerAddEditBlockModalComponent implements OnInit {
 
   public addLegendHandler(): void {
     const { name, blocksType } = this.form.getRawValue();
-    this.blocksStore.createLegendDefinition(name, blocksType);
+    this.legendStore.createLegendDefinition(name, blocksType);
   }
 
   private buildForm(): void {

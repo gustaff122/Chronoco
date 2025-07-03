@@ -5,7 +5,7 @@ export interface IEventBlock {
   type: EventBlockType;
   positions: IEventBlockPosition[];
   name: string;
-  color: string;
+  color?: string;
 }
 
 export interface IEventBlockPosition {

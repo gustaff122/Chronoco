@@ -16,7 +16,7 @@
     @for (item of legends(); track item.id) {
       <li class="text-sm gap-x-2 mt-1.5 flex items-center">
         <ng-icon class="text-base cursor-pointer" name="heroPencilSquare"/>
-        <span (click)="selectItemHandler(item.id)" [class]="item.id === selectedLegendBlock().id ? 'text-blue-400 mt-0.5 cursor-pointer' : 'text-gray-400 mt-0.5 cursor-pointer'">{{ item.name }}</span>
+        <span (click)="selectItemHandler(item.id)" [class]="item.id === selectedLegendBlock()?.id ? 'text-blue-400 mt-0.5 cursor-pointer' : 'text-gray-400 mt-0.5 cursor-pointer'">{{ item.name }}</span>
       </li>
     }
   </ul>

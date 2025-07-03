@@ -5,7 +5,6 @@ import { Component, inject, input, InputSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SchedulerGridCellsComponent } from './components/scheduler-grid-cells/scheduler-grid-cells.component';
 import { SchedulerGridBlocksComponent } from './components/scheduler-grid-blocks/scheduler-grid-blocks.component';
-import { SchedulerSelectingStore } from './stores/scheduler-selecting.store';
 import { IRoom } from '@chronoco-fe/models/i-room';
 import { SchedulerGridBlockHeightPipe } from '@chronoco-fe/pipes/scheduler-grid-block-height.pipe';
 
@@ -14,10 +13,6 @@ import { SchedulerGridBlockHeightPipe } from '@chronoco-fe/pipes/scheduler-grid-
   imports: [ CommonModule, SchedulerGridColumnsComponent, SchedulerGridRowsComponent, SchedulerGridCellsComponent, SchedulerGridBlocksComponent, SchedulerGridBlockHeightPipe ],
   templateUrl: './scheduler-grid.component.html',
   styleUrl: './scheduler-grid.component.css',
-  providers: [
-    SchedulerGridComponentStore,
-    SchedulerSelectingStore,
-  ],
 })
 export class SchedulerGridComponent {
   public rooms: InputSignal<IRoom[]> = input.required();

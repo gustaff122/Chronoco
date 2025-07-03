@@ -3,10 +3,10 @@ import { SchedulerSidebarBlocksListComponent } from './components/scheduler-side
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroMagnifyingGlass } from '@ng-icons/heroicons/outline';
 import { Dialog } from '@angular/cdk/dialog';
-import { SchedulerBlocksStore } from '../scheduler-grid/stores/scheduler-blocks/scheduler-blocks.store';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EventBlockType } from '@chronoco-fe/models/event-block-type.enum';
+import { SchedulerLegendStore } from '../scheduler-grid/stores/scheduler-legend.store';
 
 interface ISearchForm {
   search: FormControl<string>;
@@ -27,7 +27,7 @@ interface ISearchForm {
 })
 export class SchedulerSidebarComponent implements OnInit {
   private readonly dialog: Dialog = inject(Dialog);
-  private readonly blockStore: SchedulerBlocksStore = inject(SchedulerBlocksStore);
+  private readonly legendStore: SchedulerLegendStore = inject(SchedulerLegendStore);
   private readonly formBuilder: FormBuilder = inject(FormBuilder);
   private readonly destroyRef: DestroyRef = inject(DestroyRef);
   protected readonly EventBlockType = EventBlockType;
@@ -37,6 +37,8 @@ export class SchedulerSidebarComponent implements OnInit {
   public ngOnInit(): void {
     this.buildForm();
     this.initFormListener();
+
+    this.legendStore.createLegendDefinition('Scheduler', EventBlockType.LECTURE);
   }
 
   public openAddModal(): void {
@@ -44,8 +46,8 @@ export class SchedulerSidebarComponent implements OnInit {
       this.dialog.open(SchedulerAddEditBlockModalComponent, {
         providers: [
           {
-            provide: SchedulerBlocksStore,
-            useValue: this.blockStore,
+            provide: SchedulerLegendStore,
+            useValue: this.legendStore,
           },
         ],
       });
@@ -53,7 +55,7 @@ export class SchedulerSidebarComponent implements OnInit {
   }
 
   private initFormListener(): void {
-    this.form.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(({ search }) => this.blockStore.search(search));
+    this.form.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(({ search }) => this.legendStore.search(search));
   }
 
   private buildForm(): void {

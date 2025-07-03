@@ -5,7 +5,7 @@ import { SchedulerBlockTypeColorPipe } from '@chronoco-fe/pipes/scheduler-block-
 import { SchedulerTranslateBlockTypePipe } from '@chronoco-fe/pipes/scheduler-translate-block-type.pipe';
 import { EventBlockType } from '@chronoco-fe/models/event-block-type.enum';
 import { IEventBlock } from '@chronoco-fe/models/i-event-block';
-import { SchedulerBlocksStore } from '../../../scheduler-grid/stores/scheduler-blocks/scheduler-blocks.store';
+import { SchedulerLegendStore } from '../../../scheduler-grid/stores/scheduler-legend.store';
 
 @Component({
   selector: 'app-scheduler-sidebar-blocks-list',
@@ -23,11 +23,11 @@ import { SchedulerBlocksStore } from '../../../scheduler-grid/stores/scheduler-b
 export class SchedulerSidebarBlocksListComponent {
   public blocksType: InputSignal<EventBlockType> = input.required();
 
-  private readonly blockStore: SchedulerBlocksStore = inject(SchedulerBlocksStore);
+  private readonly legendStore: SchedulerLegendStore = inject(SchedulerLegendStore);
 
-  public readonly legends: Signal<IEventBlock[]> = computed(() => this.blockStore.filteredLegends().filter(({ type }) => type === this.blocksType()));
+  public readonly legends: Signal<IEventBlock[]> = computed(() => this.legendStore.filteredLegends().filter(({ type }) => type === this.blocksType()));
 
-  public readonly selectedLegendBlock: Signal<IEventBlock> = this.blockStore.selectedLegendBlock;
+  public readonly selectedLegendBlock: Signal<IEventBlock> = this.legendStore.selectedLegendBlock;
 
   public readonly isRolledUp: WritableSignal<boolean> = signal(false);
 
@@ -36,6 +36,6 @@ export class SchedulerSidebarBlocksListComponent {
   }
 
   public selectItemHandler(id: number): void {
-    this.blockStore.selectLegendForDrawing(id);
+    this.legendStore.selectLegendForDrawing(id);
   }
 }

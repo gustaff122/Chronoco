@@ -2,8 +2,10 @@ import { Component } from '@angular/core';
 import { SchedulerHeaderComponent } from './components/scheduler-header/scheduler-header.component';
 import { SchedulerGridComponent } from './components/scheduler-grid/scheduler-grid.component';
 import { SchedulerSidebarComponent } from './components/scheduler-sidebar/scheduler-sidebar.component';
-import { SchedulerBlocksStore } from './components/scheduler-grid/stores/scheduler-blocks/scheduler-blocks.store';
 import { IRoom } from '@chronoco-fe/models/i-room';
+import { SchedulerEventInstancesStore } from './components/scheduler-grid/stores/scheduler-event-instances.store';
+import { SchedulerLegendStore } from './components/scheduler-grid/stores/scheduler-legend.store';
+import { SchedulerGridComponentStore } from './components/scheduler-grid/scheduler-grid.component.store';
 
 @Component({
   selector: 'app-planner-view',
@@ -15,7 +17,9 @@ import { IRoom } from '@chronoco-fe/models/i-room';
   templateUrl: './planner-view.component.html',
   styleUrl: './planner-view.component.css',
   providers: [
-    SchedulerBlocksStore,
+    SchedulerLegendStore,
+    SchedulerEventInstancesStore,
+    SchedulerGridComponentStore,
   ],
 })
 export class PlannerViewComponent {
