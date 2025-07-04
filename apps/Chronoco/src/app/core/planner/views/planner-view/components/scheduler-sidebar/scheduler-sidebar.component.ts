@@ -1,13 +1,12 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { SchedulerSidebarBlocksListComponent } from './components/scheduler-sidebar-blocks-list/scheduler-sidebar-blocks-list.component';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { heroMagnifyingGlass } from '@ng-icons/heroicons/outline';
 import { Dialog } from '@angular/cdk/dialog';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EventBlockType } from '@chronoco-fe/models/event-block-type.enum';
 import { SchedulerLegendStore } from '../scheduler-grid/stores/scheduler-legend.store';
 import { ButtonComponent } from '@chronoco-fe/ui/button/button.component';
+import { InputComponent } from '@chronoco-fe/ui/input/input.component';
 
 interface ISearchForm {
   search: FormControl<string>;
@@ -17,15 +16,13 @@ interface ISearchForm {
   selector: 'app-scheduler-sidebar',
   imports: [
     SchedulerSidebarBlocksListComponent,
-    NgIcon,
     ReactiveFormsModule,
     ButtonComponent,
+    InputComponent,
   ],
   templateUrl: './scheduler-sidebar.component.html',
   styleUrl: './scheduler-sidebar.component.css',
-  viewProviders: [
-    provideIcons({ heroMagnifyingGlass }),
-  ],
+
 })
 export class SchedulerSidebarComponent implements OnInit {
   private readonly dialog: Dialog = inject(Dialog);

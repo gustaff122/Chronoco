@@ -1,7 +1,6 @@
 <aside class="bg-zinc-900 relative w-full bg- h-full rounded-xl text-gray-100 p-5 flex flex-col gap-y-6">
   <form [formGroup]="form" class="relative">
-    <ng-icon class="text-lg absolute left-2 top-1/2 -translate-y-1/2" name="heroMagnifyingGlass"/>
-    <input formControlName="search" placeholder="Szukaj..." class="text-sm rounded-xl ps-8 focus:ring-blue-500 focus:border-blue-500 w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white"/>
+    <app-input formControlName="search" inputId="search" inputType="text" inputPlaceholder="Szukaj..." [search]="true" class="ps-8"/>
   </form>
 
   <app-scheduler-sidebar-blocks-list [blocksType]="EventBlockType.LECTURE"/>
