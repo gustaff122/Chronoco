@@ -4,6 +4,7 @@ import { EventBlockType } from '../../models/event-block-type.enum';
 import { SchedulerTranslateBlockTypePipe } from '../../pipes/scheduler-translate-block-type.pipe';
 import { ModalComponent } from '../../ui/modal/modal.component';
 import { SchedulerLegendStore } from '@chronoco-fe/core/planner/views/planner-view/components/scheduler-grid/stores/scheduler-legend.store';
+import { ButtonComponent } from '@chronoco-fe/ui/button/button.component';
 
 interface IAddLegendForm {
   name: FormControl<string>;
@@ -16,6 +17,7 @@ interface IAddLegendForm {
     ModalComponent,
     SchedulerTranslateBlockTypePipe,
     ReactiveFormsModule,
+    ButtonComponent,
   ],
   templateUrl: './scheduler-add-edit-block-modal.component.html',
   styleUrl: './scheduler-add-edit-block-modal.component.css',

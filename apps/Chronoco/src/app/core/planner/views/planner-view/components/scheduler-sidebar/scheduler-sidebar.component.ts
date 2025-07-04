@@ -7,6 +7,7 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angul
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EventBlockType } from '@chronoco-fe/models/event-block-type.enum';
 import { SchedulerLegendStore } from '../scheduler-grid/stores/scheduler-legend.store';
+import { ButtonComponent } from '@chronoco-fe/ui/button/button.component';
 
 interface ISearchForm {
   search: FormControl<string>;
@@ -18,6 +19,7 @@ interface ISearchForm {
     SchedulerSidebarBlocksListComponent,
     NgIcon,
     ReactiveFormsModule,
+    ButtonComponent,
   ],
   templateUrl: './scheduler-sidebar.component.html',
   styleUrl: './scheduler-sidebar.component.css',
