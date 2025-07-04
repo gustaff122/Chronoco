@@ -29,7 +29,7 @@ export class SelectInputComponent implements ControlValueAccessor {
     }
   }
 
-  writeValue(value: string): void {
+  public writeValue(value: string): void {
     this.value = value;
   }
 
