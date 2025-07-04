@@ -1,10 +1,6 @@
 <lib-modal caption="Dodaj nowy blok">
   <form [formGroup]="form" (ngSubmit)="addLegendHandler()" class="flex flex-col gap-y-5">
-    <div>
-      <label for="name" class="block mb-2 text-sm font-medium text-zinc-300">Nazwa bloku</label>
-      <input formControlName="name" type="text" id="name" class="text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white" placeholder="Niesamowita atrakcja"/>
-    </div>
-
+    <app-input formControlName="name" inputId="name" inputType="text" inputPlaceholder="Niesamowita atrakcja" label="Nazwa bloku"/>
     <div>
       <label for="block-type" class="block mb-2 text-sm font-medium text-zinc-300">Typ bloku</label>
       <select formControlName="blocksType" id="block-type" class="text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 appearance-none bg-gray-700 border-gray-600 placeholder-gray-400 text-white">
