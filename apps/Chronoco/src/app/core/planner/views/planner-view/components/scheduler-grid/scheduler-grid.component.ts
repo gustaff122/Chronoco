@@ -16,8 +16,9 @@ import { SchedulerGridBlockHeightPipe } from '@chronoco-fe/pipes/scheduler-grid-
 })
 export class SchedulerGridComponent {
   public rooms: InputSignal<IRoom[]> = input.required();
-  public timeFrom: InputSignal<string> = input('00:00');
-  public timeTo: InputSignal<string> = input('23:59');
+  public timeFrom: InputSignal<Date> = input(new Date(2025, 1, 14, 0, 0, 0, 0));
+  public timeTo: InputSignal<Date> = input(new Date(2025, 1, 16, 23, 59, 0, 0));
+
 
   private readonly componentStore: SchedulerGridComponentStore = inject(SchedulerGridComponentStore);
 
