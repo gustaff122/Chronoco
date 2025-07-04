@@ -30,7 +30,6 @@ interface AutoScrollConfig {
   imports: [
     NgStyle,
     SchedulerGridSingleBlockComponent,
-
   ],
 })
 export class SchedulerGridBlocksComponent implements OnDestroy {
@@ -43,7 +42,7 @@ export class SchedulerGridBlocksComponent implements OnDestroy {
   public readonly rooms: Signal<IRoom[]> = this.gridStore.rooms;
 
   private readonly edgeThreshold = 10;
-  private readonly maxRow = 24 * 4;
+  private readonly maxRow = 24 * 4; // 24 hours * 4 quarters per hour
 
   private readonly autoScrollConfig: AutoScrollConfig = {
     margin: 50,
@@ -78,6 +77,98 @@ export class SchedulerGridBlocksComponent implements OnDestroy {
     this.stopAutoScroll();
   }
 
+  // Dodaj metodę do określania typu kursora
+  public getCursorType(event: MouseEvent, block: any): string {
+    const mousePos = this.getMousePosition(event);
+    if (!mousePos) return 'default';
+
+    const style = this.eventInstancesStore.getPositionStyle(
+      block.instance.position,
+      this.dateTimeToIndex.bind(this),
+    );
+
+    const distanceFromTop = mousePos.y - style.top;
+    const distanceFromBottom = style.top + style.height - mousePos.y;
+    const distanceFromLeft = mousePos.x - style.left;
+    const distanceFromRight = style.left + style.width - mousePos.x;
+
+    // Sprawdź narożniki najpierw (dla resize na ukos)
+    if (distanceFromTop < this.edgeThreshold && distanceFromLeft < this.edgeThreshold) {
+      return 'nw-resize';
+    }
+    if (distanceFromTop < this.edgeThreshold && distanceFromRight < this.edgeThreshold) {
+      return 'ne-resize';
+    }
+    if (distanceFromBottom < this.edgeThreshold && distanceFromLeft < this.edgeThreshold) {
+      return 'sw-resize';
+    }
+    if (distanceFromBottom < this.edgeThreshold && distanceFromRight < this.edgeThreshold) {
+      return 'se-resize';
+    }
+
+    // Sprawdź krawędzie
+    if (distanceFromTop < this.edgeThreshold) {
+      return 'n-resize';
+    }
+    if (distanceFromBottom < this.edgeThreshold) {
+      return 's-resize';
+    }
+    if (distanceFromLeft < this.edgeThreshold) {
+      return 'w-resize';
+    }
+    if (distanceFromRight < this.edgeThreshold) {
+      return 'e-resize';
+    }
+
+    return 'move';
+  }
+
+  // Dodaj metodę do obsługi hover'a na blokach
+  public onBlockMouseMove(event: MouseEvent, block: any): void {
+    if (this.mode !== InteractionMode.None) return;
+
+    const cursor = this.getCursorType(event, block);
+    (event.target as HTMLElement).style.cursor = cursor;
+  }
+
+  // Dodaj metodę do resetowania kursora
+  public onBlockMouseLeave(event: MouseEvent): void {
+    if (this.mode !== InteractionMode.None) return;
+
+    (event.target as HTMLElement).style.cursor = 'default';
+  }
+
+  // Dodaj metodę do ustawienia kursora podczas operacji
+  private setOperationCursor(): void {
+    const container = this.container();
+    if (!container) return;
+
+    let cursor = 'default';
+
+    switch (this.mode) {
+      case InteractionMode.Dragging:
+        cursor = 'move';
+        break;
+      case InteractionMode.ResizingTop:
+        cursor = 'n-resize';
+        break;
+      case InteractionMode.ResizingBottom:
+        cursor = 's-resize';
+        break;
+      case InteractionMode.ResizingLeft:
+        cursor = 'w-resize';
+        break;
+      case InteractionMode.ResizingRight:
+        cursor = 'e-resize';
+        break;
+      case InteractionMode.Creating:
+        cursor = 'crosshair';
+        break;
+    }
+
+    container.nativeElement.style.cursor = cursor;
+  }
+
   public startSelectingHandler(event: MouseEvent) {
     const mousePos = this.getMousePosition(event);
     if (!mousePos) return;
@@ -85,7 +176,7 @@ export class SchedulerGridBlocksComponent implements OnDestroy {
     const clickedInstances = this.eventInstancesStore.findAtPosition(
       mousePos.x,
       mousePos.y,
-      this.timeToIndex.bind(this),
+      this.dateTimeToIndex.bind(this),
     );
 
     const clickedInstance = clickedInstances[0];
@@ -138,7 +229,6 @@ export class SchedulerGridBlocksComponent implements OnDestroy {
     }
   }
 
-  // Improved autoscroll implementation
   private updateAutoScroll(clientX: number, clientY: number) {
     if (!this.scrollContainer) {
       return;
@@ -258,7 +348,6 @@ export class SchedulerGridBlocksComponent implements OnDestroy {
 
   public stopSelectingHandler() {
     if (this.hasCollision && this.originalPosition && this.activeInstanceId) {
-
       if (this.mode === InteractionMode.Creating) {
         this.eventInstancesStore.delete(this.activeInstanceId);
       } else {
@@ -270,6 +359,12 @@ export class SchedulerGridBlocksComponent implements OnDestroy {
     this.activeInstanceId = null;
     this.originalPosition = null;
     this.hasCollision = false;
+
+    // Resetuj kursor
+    const container = this.container();
+    if (container) {
+      container.nativeElement.style.cursor = 'default';
+    }
 
     this.cleanup();
   }
@@ -294,7 +389,7 @@ export class SchedulerGridBlocksComponent implements OnDestroy {
 
     const style = this.eventInstancesStore.getPositionStyle(
       instance.position,
-      this.timeToIndex.bind(this),
+      this.dateTimeToIndex.bind(this),
     );
 
     const distanceFromTop = mousePos.y - style.top;
@@ -313,6 +408,9 @@ export class SchedulerGridBlocksComponent implements OnDestroy {
     } else {
       this.mode = InteractionMode.Dragging;
     }
+
+    // Ustaw kursor dla operacji
+    this.setOperationCursor();
 
     event.preventDefault();
     event.stopPropagation();
@@ -334,12 +432,15 @@ export class SchedulerGridBlocksComponent implements OnDestroy {
       return;
     }
 
+    const startDate = this.indexToDateTime(rowIndex);
+    const endDate = this.indexToDateTime(rowIndex + 1);
+
     const newPosition: Omit<IRenderableBlock, 'id' | 'positionIndex'> = {
       legendId: selectedLegend.id,
       position: {
         rooms: [ rooms[colIndex].name ],
-        startTime: this.indexToTime(rowIndex),
-        endTime: this.indexToTime(rowIndex + 1),
+        startTime: startDate,
+        endTime: endDate,
       },
       legend: selectedLegend,
     };
@@ -354,6 +455,9 @@ export class SchedulerGridBlocksComponent implements OnDestroy {
     this.startMouseX = mousePos.x;
     this.startMouseY = mousePos.y;
     this.mode = InteractionMode.Creating;
+
+    // Ustaw kursor dla operacji
+    this.setOperationCursor();
 
     event.preventDefault();
     event.stopPropagation();
@@ -375,20 +479,21 @@ export class SchedulerGridBlocksComponent implements OnDestroy {
 
     const selectedRooms = rooms.slice(newStartRoomIdx, newStartRoomIdx + roomCount).map(r => r.name);
 
-    const startRow = this.timeToIndex(this.originalPosition.startTime);
-    const endRow = this.timeToIndex(this.originalPosition.endTime);
+    const startRow = this.dateTimeToIndex(this.originalPosition.startTime);
+    const endRow = this.dateTimeToIndex(this.originalPosition.endTime);
     const duration = endRow - startRow;
 
+    const totalRows = this.getTotalRows();
     let newStartRow = startRow + deltaRows;
     newStartRow = Math.max(0, newStartRow);
-    newStartRow = Math.min(this.maxRow - duration, newStartRow);
+    newStartRow = Math.min(totalRows - duration, newStartRow);
 
     const newEndRow = newStartRow + duration;
 
     const newPosition = {
       rooms: selectedRooms,
-      startTime: this.indexToTime(newStartRow),
-      endTime: this.indexToTime(newEndRow),
+      startTime: this.indexToDateTime(newStartRow),
+      endTime: this.indexToDateTime(newEndRow),
     };
 
     this.updateActiveInstance(newPosition);
@@ -398,8 +503,8 @@ export class SchedulerGridBlocksComponent implements OnDestroy {
     if (!this.originalPosition || !this.activeInstanceId) return;
 
     const deltaRows = Math.round(deltaY / this.gridStore.gridSizeY());
-    const originalStartRow = this.timeToIndex(this.originalPosition.startTime);
-    const originalEndRow = this.timeToIndex(this.originalPosition.endTime);
+    const originalStartRow = this.dateTimeToIndex(this.originalPosition.startTime);
+    const originalEndRow = this.dateTimeToIndex(this.originalPosition.endTime);
 
     let newStartRow = originalStartRow + deltaRows;
     newStartRow = Math.max(0, newStartRow);
@@ -407,9 +512,10 @@ export class SchedulerGridBlocksComponent implements OnDestroy {
     if (newStartRow >= originalEndRow) {
       this.mode = InteractionMode.ResizingBottom;
 
+      const totalRows = this.getTotalRows();
       const newPosition = {
         startTime: this.originalPosition.endTime,
-        endTime: this.indexToTime(Math.min(this.maxRow, newStartRow + 1)),
+        endTime: this.indexToDateTime(Math.min(totalRows, newStartRow + 1)),
       };
 
       this.updateActiveInstance(newPosition);
@@ -417,11 +523,11 @@ export class SchedulerGridBlocksComponent implements OnDestroy {
       this.originalPosition = {
         ...this.originalPosition,
         startTime: this.originalPosition.endTime,
-        endTime: this.indexToTime(newStartRow + 1),
+        endTime: this.indexToDateTime(newStartRow + 1),
       };
     } else {
       const newPosition = {
-        startTime: this.indexToTime(newStartRow),
+        startTime: this.indexToDateTime(newStartRow),
       };
 
       this.updateActiveInstance(newPosition);
@@ -432,17 +538,18 @@ export class SchedulerGridBlocksComponent implements OnDestroy {
     if (!this.originalPosition || !this.activeInstanceId) return;
 
     const deltaRows = Math.round(deltaY / this.gridStore.gridSizeY());
-    const originalStartRow = this.timeToIndex(this.originalPosition.startTime);
-    const originalEndRow = this.timeToIndex(this.originalPosition.endTime);
+    const originalStartRow = this.dateTimeToIndex(this.originalPosition.startTime);
+    const originalEndRow = this.dateTimeToIndex(this.originalPosition.endTime);
 
+    const totalRows = this.getTotalRows();
     let newEndRow = originalEndRow + deltaRows;
-    newEndRow = Math.min(this.maxRow, newEndRow);
+    newEndRow = Math.min(totalRows, newEndRow);
 
     if (newEndRow <= originalStartRow) {
       this.mode = InteractionMode.ResizingTop;
 
       const newPosition = {
-        startTime: this.indexToTime(Math.max(0, newEndRow - 1)),
+        startTime: this.indexToDateTime(Math.max(0, newEndRow - 1)),
         endTime: this.originalPosition.startTime,
       };
 
@@ -450,12 +557,12 @@ export class SchedulerGridBlocksComponent implements OnDestroy {
 
       this.originalPosition = {
         ...this.originalPosition,
-        startTime: this.indexToTime(newEndRow - 1),
+        startTime: this.indexToDateTime(newEndRow - 1),
         endTime: this.originalPosition.startTime,
       };
     } else {
       const newPosition = {
-        endTime: this.indexToTime(newEndRow),
+        endTime: this.indexToDateTime(newEndRow),
       };
 
       this.updateActiveInstance(newPosition);
@@ -511,10 +618,9 @@ export class SchedulerGridBlocksComponent implements OnDestroy {
   private handleCreating(deltaX: number, deltaY: number) {
     if (!this.originalPosition || !this.activeInstanceId) return;
 
-
     const rooms = this.rooms();
     const originalColIndex = rooms.findIndex(r => r.name === this.originalPosition.rooms[0]);
-    const originalRowIndex = this.timeToIndex(this.originalPosition.startTime);
+    const originalRowIndex = this.dateTimeToIndex(this.originalPosition.startTime);
 
     const deltaCol = Math.round(deltaX / this.gridStore.gridSizeX());
     const deltaRow = Math.round(deltaY / this.gridStore.gridSizeY());
@@ -538,8 +644,9 @@ export class SchedulerGridBlocksComponent implements OnDestroy {
       [ startRow, endRow ] = [ endRow, startRow ];
     }
 
+    const totalRows = this.getTotalRows();
     startRow = Math.max(0, startRow);
-    endRow = Math.min(this.maxRow - 1, endRow);
+    endRow = Math.min(totalRows - 1, endRow);
 
     if (endRow <= startRow) {
       endRow = startRow + 1;
@@ -547,8 +654,8 @@ export class SchedulerGridBlocksComponent implements OnDestroy {
 
     const newPosition = {
       rooms: selectedRooms,
-      startTime: this.indexToTime(startRow),
-      endTime: this.indexToTime(endRow),
+      startTime: this.indexToDateTime(startRow),
+      endTime: this.indexToDateTime(endRow),
     };
 
     this.updateActiveInstance(newPosition);
@@ -560,22 +667,48 @@ export class SchedulerGridBlocksComponent implements OnDestroy {
     this.eventInstancesStore.update(this.activeInstanceId, updates);
   }
 
-  private timeToIndex(time: string): number {
-    const [ h, m ] = time.split(':').map(Number);
-    return h * 4 + Math.floor(m / 15);
+  private dateTimeToIndex(dateTime: Date): number {
+    const timeFrom = this.gridStore.timeFrom();
+    const timeTo = this.gridStore.timeTo();
+
+    // Sprawdzenie czy data mieści się w zakresie
+    if (dateTime < timeFrom || dateTime > timeTo) {
+      console.warn('DateTime out of grid range:', dateTime);
+      return 0;
+    }
+
+    // Obliczenie różnicy w milisekundach od początku zakresu
+    const diffMs = dateTime.getTime() - timeFrom.getTime();
+
+    // Przeliczenie na indeks (15 minut = 1 indeks)
+    const quarterHours = Math.floor(diffMs / (15 * 60 * 1000));
+
+    return quarterHours;
   }
 
-  private indexToTime(index: number): string {
-    const h = Math.floor(index / 4);
-    const m = (index % 4) * 15;
-    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+  private indexToDateTime(index: number): Date {
+    const timeFrom = this.gridStore.timeFrom();
+
+    // Przeliczenie indeksu na milisekundy (15 minut = 1 indeks)
+    const offsetMs = index * 15 * 60 * 1000;
+
+    return new Date(timeFrom.getTime() + offsetMs);
+  }
+
+  private getTotalRows(): number {
+    const timeFrom = this.gridStore.timeFrom();
+    const timeTo = this.gridStore.timeTo();
+
+    // Obliczenie całkowitej liczby wierszy (kwadransów)
+    const diffMs = timeTo.getTime() - timeFrom.getTime();
+    return Math.floor(diffMs / (15 * 60 * 1000));
   }
 
   public readonly blockStyle = computed(() => {
     return this.eventInstances().map((instance) => {
       const style = this.eventInstancesStore.getPositionStyle(
         instance.position,
-        this.timeToIndex.bind(this),
+        this.dateTimeToIndex.bind(this),
       );
 
       return {

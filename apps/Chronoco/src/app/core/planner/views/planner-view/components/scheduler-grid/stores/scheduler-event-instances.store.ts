@@ -40,7 +40,6 @@ export class SchedulerEventInstancesStore {
     });
   }
 
-
   public delete(instanceId: string): void {
     this._eventInstances.update(state => (state.filter(instance => instance.id !== instanceId)));
   }
@@ -48,10 +47,10 @@ export class SchedulerEventInstancesStore {
   public findAtPosition(
     x: number,
     y: number,
-    timeToIndex: (time: string) => number,
+    dateTimeToIndex: (time: Date) => number,
   ): IRenderableBlock[] {
     return this._eventInstances().filter(instance => {
-      const style = this.getPositionStyle(instance.position, timeToIndex);
+      const style = this.getPositionStyle(instance.position, dateTimeToIndex);
       return (
         x >= style.left &&
         x <= style.left + style.width &&
@@ -74,19 +73,20 @@ export class SchedulerEventInstancesStore {
       const [ startA, endA ] = [ position.startTime, position.endTime ];
       const [ startB, endB ] = [ instance.position.startTime, instance.position.endTime ];
 
+      // Porównanie dat - sprawdzamy czy okresy się nie nakładają
       return !(endA <= startB || startA >= endB);
     });
   }
 
   public getPositionStyle(
     position: IEventBlockPosition,
-    timeToIndex: (time: string) => number,
+    dateTimeToIndex: (time: Date) => number,
   ) {
     const gridSizeX = this.gridStore.gridSizeX();
     const gridSizeY = this.gridStore.gridSizeY();
 
-    const top = timeToIndex(position.startTime) * gridSizeY;
-    const height = (timeToIndex(position.endTime) - timeToIndex(position.startTime)) * gridSizeY;
+    const top = dateTimeToIndex(position.startTime) * gridSizeY;
+    const height = (dateTimeToIndex(position.endTime) - dateTimeToIndex(position.startTime)) * gridSizeY;
 
     const roomIndexes = position.rooms.map(r => this.gridStore.rooms().findIndex(x => x.name === r));
 
