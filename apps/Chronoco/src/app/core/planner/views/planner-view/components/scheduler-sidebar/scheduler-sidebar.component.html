@@ -13,8 +13,8 @@
   <app-scheduler-sidebar-blocks-list [blocksType]="EventBlockType.OTHER"/>
 
   <div class="absolute w-full left-0 bottom-0 p-5 rounded-xl bg-gray-900">
-    <button (click)="openAddModal()" class="w-full bg-indigo-700 text-sm rounded-lg text-gray-200 py-2.5" type="button">
+    <app-button (click)="openAddModal()" [extraType]="'button'" [extraClass]="'w-full bg-indigo-700 text-sm rounded-lg text-gray-200 py-2.5'">
       Dodaj nowy blok
-    </button>
+    </app-button>
   </div>
 </aside>
