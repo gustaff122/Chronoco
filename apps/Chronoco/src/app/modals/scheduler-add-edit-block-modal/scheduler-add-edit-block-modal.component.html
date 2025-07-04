@@ -1,16 +1,8 @@
 <lib-modal caption="Dodaj nowy blok">
+
   <form [formGroup]="form" (ngSubmit)="addLegendHandler()" class="flex flex-col gap-y-5">
     <app-input formControlName="name" inputId="name" inputType="text" inputPlaceholder="Niesamowita atrakcja" label="Nazwa bloku"/>
-    <div>
-      <label for="block-type" class="block mb-2 text-sm font-medium text-zinc-300">Typ bloku</label>
-      <select formControlName="blocksType" id="block-type" class="text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 appearance-none bg-gray-700 border-gray-600 placeholder-gray-400 text-white">
-        @for (category of blockTypes(); track category) {
-          <option [value]="category">
-            {{ category | appSchedulerTranslateBlockType }}
-          </option>
-        }
-      </select>
-    </div>
+    <app-select-input formControlName="blocksType" inputId="block-type" label="Typ Bloku" [options]="blockTypesx()"/>
 
     <div class="flex justify-end">
       <app-button btnType="submit" class="w-fit" severity="outline">
