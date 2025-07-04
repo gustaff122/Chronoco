@@ -4,7 +4,8 @@
       {{ block().legend.name }}
     </p>
     <p class="text-xs text-gray-600 mt-0.5">
-      {{ block().position.startTime }} - {{ block().position.endTime }}
+      od {{ block().position.startTime | date : 'dd.MM, HH:mm' }} <br/>
+      do {{ block().position.endTime | date : 'dd.MM, HH:mm' }}
     </p>
   </div>
 </div>

@@ -10,8 +10,8 @@ export interface IEventBlock {
 
 export interface IEventBlockPosition {
   rooms: string[];
-  startTime: string;
-  endTime: string;
+  startTime: Date;
+  endTime: Date;
 }
 
 export interface IRenderableBlock {
