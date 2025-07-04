@@ -4,33 +4,23 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'appSchedulerGenerateHoursCaptions',
 })
 export class SchedulerGenerateHoursCaptionsPipe implements PipeTransform {
-  public transform(timeFrom: string, timeTo: string): string[] {
+  public transform(timeFrom: Date, timeTo: Date): string[] {
+    if (!timeFrom || !timeTo) return [];
+
     const result: string[] = [];
-
-    const [ fromHours, fromMinutes ] = timeFrom.split(':').map(Number);
-    const [ toHours, toMinutes ] = timeTo.split(':').map(Number);
-
-    const start = new Date();
-    start.setHours(fromHours, fromMinutes, 0, 0);
-
-    const end = new Date();
-    end.setHours(toHours, toMinutes, 0, 0);
-
-    const current = new Date(start);
+    const current = new Date(timeFrom);
 
     result.push(this.formatTime(current));
 
-    while (current < end) {
-      current.setHours(current.getHours() + 1);
-      current.setMinutes(0);
+    while (current < timeTo) {
+      current.setHours(current.getHours() + 1, 0, 0, 0);
 
-      if (current < end) {
+      if (current < timeTo) {
         result.push(this.formatTime(current));
       }
     }
 
-    const lastFormatted = this.formatTime(end);
-
+    const lastFormatted = this.formatTime(timeTo);
     if (result[result.length - 1] !== lastFormatted) {
       result.push(lastFormatted);
     }

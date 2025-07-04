@@ -15,11 +15,12 @@ import { SCHEDULER_HOUR_CAPTION_HEIGHT } from '@chronoco-fe/const/scheduler-grid
 export class SchedulerGridSingleCellComponent {
   public room: InputSignal<IRoom> = input.required();
   public isLastRow: InputSignal<boolean> = input.required();
+  public isFirstRow: InputSignal<boolean> = input.required();
   public isLastColumn: InputSignal<boolean> = input.required();
   public time: InputSignal<string> = input.required();
 
   private readonly gridComponentStore: SchedulerGridComponentStore = inject(SchedulerGridComponentStore);
 
   public readonly SCHEDULER_HOUR_CAPTION_HEIGHT: number = SCHEDULER_HOUR_CAPTION_HEIGHT;
-  public readonly timeTo: Signal<string> = this.gridComponentStore.timeTo;
+  public readonly timeTo: Signal<Date> = this.gridComponentStore.timeTo;
 }

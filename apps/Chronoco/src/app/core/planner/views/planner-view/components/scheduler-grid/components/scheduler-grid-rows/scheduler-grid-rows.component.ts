@@ -15,6 +15,6 @@ import { SchedulerGenerateHoursCaptionsPipe } from '@chronoco-fe/pipes/scheduler
 export class SchedulerGridRowsComponent {
   private readonly gridComponentStore: SchedulerGridComponentStore = inject(SchedulerGridComponentStore);
 
-  public readonly timeFrom: Signal<string> = this.gridComponentStore.timeFrom;
-  public readonly timeTo: Signal<string> = this.gridComponentStore.timeTo;
+  public readonly timeFrom: Signal<Date> = this.gridComponentStore.timeFrom;
+  public readonly timeTo: Signal<Date> = this.gridComponentStore.timeTo;
 }
