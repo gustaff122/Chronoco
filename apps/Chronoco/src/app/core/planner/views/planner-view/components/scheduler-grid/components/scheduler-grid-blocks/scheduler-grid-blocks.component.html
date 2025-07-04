@@ -7,7 +7,9 @@
   @for (block of blockStyle(); track block.id) {
     <div
       class="event-block"
-      [ngStyle]="block.style">
+      [ngStyle]="block.style"
+      (mousemove)="onBlockMouseMove($event, block)"
+      (mouseleave)="onBlockMouseLeave($event)">
       <app-scheduler-grid-single-block [block]="block.instance"/>
     </div>
   }
