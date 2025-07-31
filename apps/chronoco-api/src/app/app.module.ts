@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 import { Users } from './entities/users.entity';
+import { UsersModule } from './modules/users/users.module';
 
 const ENTITIES = [
   Users,
@@ -10,6 +11,7 @@ const ENTITIES = [
 
 const MODULES = [
   AuthModule,
+  UsersModule,
 ];
 
 @Module({
