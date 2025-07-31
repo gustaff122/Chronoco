@@ -12,3 +12,9 @@
   width: var(--w);
   height: var(--h);
 }
+
+.conflict {
+  border: 2px solid #ff4444 !important;
+  background-color: rgba(255, 68, 68, 0.1) !important;
+  box-shadow: 0 0 10px rgba(255, 68, 68, 0.5);
+}
