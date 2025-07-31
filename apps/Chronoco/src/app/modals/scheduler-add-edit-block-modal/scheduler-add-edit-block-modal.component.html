@@ -1,7 +1,7 @@
 <lib-modal caption="Dodaj nowy blok">
 
   <form [formGroup]="form" (ngSubmit)="addLegendHandler()" class="flex flex-col gap-y-5">
-    <app-input formControlName="name" inputId="name" inputType="text" inputPlaceholder="Niesamowita atrakcja" label="Nazwa bloku"/>
+    <app-input formControlName="name" inputId="name" inputType="text" placeholder="Niesamowita atrakcja" label="Nazwa bloku"/>
     <app-select-input formControlName="blocksType" inputId="block-type" label="Typ Bloku" [options]="blockTypesx()"/>
 
     <div class="flex justify-end">

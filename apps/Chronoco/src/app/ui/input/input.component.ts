@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, FormsModule, NgControl, ReactiveFormsModule } from '@angular/forms';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroMagnifyingGlass } from '@ng-icons/heroicons/outline';
+import { ulid } from 'ulid';
 
 type InputType = 'password' | 'number' | 'text' | 'search';
 
@@ -17,9 +18,9 @@ type InputType = 'password' | 'number' | 'text' | 'search';
 })
 export class InputComponent implements ControlValueAccessor {
   public inputType: InputSignal<InputType> = input('text' as InputType);
-  public inputPlaceholder: InputSignal<string> = input(null);
+  public placeholder: InputSignal<string> = input(null);
   public label: InputSignal<string> = input(null);
-  public inputId: InputSignal<string> = input(null);
+  public inputId: InputSignal<string> = input(ulid());
   public search: InputSignal<boolean> = input(false);
 
   public value: string = null;

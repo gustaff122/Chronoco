@@ -12,8 +12,7 @@ export class SchedulerEventInstancesStore {
   public readonly eventInstances: Signal<IRenderableBlock[]> = this._eventInstances.asReadonly();
 
   public create(instance: Omit<IRenderableBlock, 'id' | 'positionIndex'>): IRenderableBlock {
-    if (this.hasConflict(instance.position)) return null;
-
+    // Usuń sprawdzenie konfliktu - pozwól na tworzenie nakładających się eventów
     const newInstance: IRenderableBlock = {
       ...instance,
       id: `instance-${this._nextInstanceId++}`,
@@ -25,17 +24,13 @@ export class SchedulerEventInstancesStore {
   }
 
   public update(instanceId: string, position: Partial<IEventBlockPosition>): void {
-    let updatedInstance: IRenderableBlock | null = null;
-
     this._eventInstances.update(instances => {
       return instances.map(instance => {
         if (instance.id !== instanceId) return instance;
         const updatedPosition = { ...instance.position, ...position };
 
-        if (this.hasConflict(updatedPosition, instanceId)) return instance;
-
-        updatedInstance = { ...instance, position: updatedPosition };
-        return updatedInstance;
+        // Usuń sprawdzenie konfliktu - pozwól na aktualizację do nakładających się pozycji
+        return { ...instance, position: updatedPosition };
       });
     });
   }
@@ -76,6 +71,29 @@ export class SchedulerEventInstancesStore {
       // Porównanie dat - sprawdzamy czy okresy się nie nakładają
       return !(endA <= startB || startA >= endB);
     });
+  }
+
+  // Nowa metoda do sprawdzania konfliktów dla konkretnego eventu
+  public getConflictingInstances(instanceId: string): IRenderableBlock[] {
+    const targetInstance = this._eventInstances().find(instance => instance.id === instanceId);
+    if (!targetInstance) return [];
+
+    return this._eventInstances().filter(instance => {
+      if (instance.id === instanceId) return false;
+
+      const roomsOverlap = targetInstance.position.rooms.some(r => instance.position.rooms.includes(r));
+      if (!roomsOverlap) return false;
+
+      const [ startA, endA ] = [ targetInstance.position.startTime, targetInstance.position.endTime ];
+      const [ startB, endB ] = [ instance.position.startTime, instance.position.endTime ];
+
+      return !(endA <= startB || startA >= endB);
+    });
+  }
+
+  // Metoda do sprawdzania czy dany event ma konflikty
+  public hasConflictById(instanceId: string): boolean {
+    return this.getConflictingInstances(instanceId).length > 0;
   }
 
   public getPositionStyle(

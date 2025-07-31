@@ -1,6 +1,6 @@
 <aside class="bg-zinc-900 relative w-full bg- h-full rounded-xl text-gray-100 p-5 flex flex-col gap-y-6">
   <form [formGroup]="form" class="relative">
-    <app-input formControlName="search" inputId="search" inputType="text" inputPlaceholder="Szukaj..." [search]="true" class="ps-8"/>
+    <app-input formControlName="search" inputId="search" inputType="text" placeholder="Szukaj..." [search]="true" class="ps-8"/>
   </form>
 
   <app-scheduler-sidebar-blocks-list [blocksType]="EventBlockType.LECTURE"/>
