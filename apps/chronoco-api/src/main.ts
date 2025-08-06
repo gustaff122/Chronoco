@@ -18,6 +18,11 @@ async function bootstrap() {
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, documentFactory);
 
+  app.enableCors({
+    origin: 'http://localhost:4200',
+    credentials: true,
+  });
+
   app.use(cookieParser());
 
   await app.listen(port);

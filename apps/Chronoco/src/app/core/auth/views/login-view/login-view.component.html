@@ -1,21 +1,22 @@
-<form class="flex flex-col h-full gap-y-5 items-center justify-center w-96">
+<form [formGroup]="form" (ngSubmit)="loginHandler()" class="flex flex-col h-full gap-y-5 items-center justify-center w-96">
   <h1 class="text-5xl text-white font-medium tracking-widest">
     CHRONOCO
   </h1>
 
   <app-input
+    formControlName="login"
     label="Login"
     placeholder="r.maklowicz@chronoco.com"
     class="w-96"/>
 
-
   <app-input
+    formControlName="password"
     inputType="password"
     label="Hasło"
     placeholder="password123!"
     class="w-96"/>
 
-  <app-button size="lg" class="w-96">
+  <app-button size="lg" class="w-96" btnType="submit">
     Zaloguj się
   </app-button>
 </form>

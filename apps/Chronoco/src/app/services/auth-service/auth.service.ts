@@ -18,4 +18,8 @@ export class AuthService {
   public getSelf(): Observable<IUser> {
     return this.httpClient.get<IUser>(`${this.API_URL}/auth/self`);
   }
+
+  public logout(): Observable<void> {
+    return this.httpClient.delete<void>(`${this.API_URL}/auth/logout`);
+  }
 }

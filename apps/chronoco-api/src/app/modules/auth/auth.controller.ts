@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LoginDto, RegisterDto } from './dto/auth.dto';
@@ -32,17 +32,18 @@ export class AuthController {
   public async login(
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<{ user: UserResponse }> {
+  ): Promise<UserResponse> {
     const { user, accessToken } = await this.authService.login(loginDto);
 
     res.cookie('access_token', accessToken, {
       httpOnly: true,
-      secure: true,
+      //TODO
+      secure: false,
       sameSite: 'lax',
       maxAge: 1000 * 60 * 60 * 3,
     });
 
-    return { user };
+    return user;
   }
 
   @Get('self')
@@ -53,5 +54,18 @@ export class AuthController {
   public async getSelf(@Req() req: IRequest): Promise<UserResponse> {
     const userId = req?.user['id'];
     return this.authService.findOneByIdWithoutPassword(userId);
+  }
+
+  @Delete('logout')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiResponse({ status: 200, description: 'User logged out successfully.' })
+  public async logout(@Res({ passthrough: true }) res: Response): Promise<void> {
+    res.clearCookie('access_token', {
+      httpOnly: true,
+      //TODO
+      secure: false,
+      sameSite: 'lax',
+    });
   }
 }
