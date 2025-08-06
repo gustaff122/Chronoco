@@ -1,9 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from '../../entities/users.entity';
 import { Like, Repository } from 'typeorm';
-import { CreateUserDto, UpdateUserDto, UserQueryDto, UserResponseDto } from './dto/users.dto';
+import { CreateUserDto, UpdateUserDto, UserResponseDto } from './dto/users.dto';
 import { PaginatedResponse } from './models/paginated-response';
+import { PaginationDto } from '../../interfaces/pagination.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -12,7 +14,7 @@ export class UsersService {
   ) {
   }
 
-  public async findAll(query: UserQueryDto): Promise<PaginatedResponse<Users>> {
+  public async findAll(query: PaginationDto): Promise<PaginatedResponse<Users>> {
     const { page = 1, limit = 10, search } = query;
 
     const [ items, total ] = await this.usersRepository.findAndCount({
@@ -23,26 +25,31 @@ export class UsersService {
       take: limit,
       skip: (page - 1) * limit,
       order: { login: 'ASC' },
+      select: [ 'id', 'login', 'name', 'role' ],
     });
 
     return {
-      data: items,
-      total,
-      page,
-      limit,
-      pages: Math.ceil(total / limit),
+      items,
+      pager: {
+        totalItems: total,
+        currentPage: page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
     };
   }
 
 
   public async create(user: CreateUserDto): Promise<Users> {
-    const usersCount = await this.usersRepository.count();
-
+    const existingUser = await this.usersRepository.findOne({ where: { login: user.login } });
+    if (existingUser) {
+      throw new ConflictException('User with this login already exists');
+    }
+    const hashedPassword = await bcrypt.hash(user.password, 10);
     const newUser = this.usersRepository.create({
       ...user,
-      role: usersCount === 0 ? 'ADMIN' : 'USER',
+      password: hashedPassword,
     });
-
     return await this.usersRepository.save(newUser);
   }
 

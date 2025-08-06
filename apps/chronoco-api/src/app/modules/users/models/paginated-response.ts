@@ -5,19 +5,16 @@ export class PaginatedResponse<T> {
     example: [
       { id: 1, name: 'Alice', email: 'alice@example.com' },
       { id: 2, name: 'Bob', email: 'bob@example.com' },
-    ], description: 'List of users',
+    ],
+    description: 'List of users',
   })
-  data: T[];
+  items: T[];
 
   @ApiProperty()
-  total: number;
-
-  @ApiProperty()
-  page: number;
-
-  @ApiProperty()
-  limit: number;
-
-  @ApiProperty()
-  pages: number;
+  pager: {
+    totalItems: number,
+    currentPage: number,
+    limit: number,
+    totalPages: number,
+  };
 }

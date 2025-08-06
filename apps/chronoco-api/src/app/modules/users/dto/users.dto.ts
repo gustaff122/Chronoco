@@ -1,22 +1,5 @@
-import { IsNotEmpty, IsOptional, IsPositive, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-
-export class UserQueryDto {
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsPositive()
-  page?: number = 1;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsPositive()
-  limit?: number = 10;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  search?: string;
-}
-
 
 export class CreateUserDto {
   @ApiProperty()

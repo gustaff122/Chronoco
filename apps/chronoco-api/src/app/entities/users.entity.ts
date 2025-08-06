@@ -1,6 +1,5 @@
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryColumn } from 'typeorm';
+import { BeforeInsert, Column, Entity, PrimaryColumn } from 'typeorm';
 import { ulid } from 'ulid';
-import * as bcrypt from 'bcrypt';
 
 @Entity()
 export class Users {
@@ -22,13 +21,5 @@ export class Users {
   @BeforeInsert()
   generateId() {
     this.id = ulid();
-  }
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  async hashPassword() {
-    if (this.password && !this.password.startsWith('$2b$')) {
-      this.password = await bcrypt.hash(this.password, 10);
-    }
   }
 }
