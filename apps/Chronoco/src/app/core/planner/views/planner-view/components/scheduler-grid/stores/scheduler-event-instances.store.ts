@@ -12,7 +12,6 @@ export class SchedulerEventInstancesStore {
   public readonly eventInstances: Signal<IRenderableBlock[]> = this._eventInstances.asReadonly();
 
   public create(instance: Omit<IRenderableBlock, 'id' | 'positionIndex'>): IRenderableBlock {
-    // Usuń sprawdzenie konfliktu - pozwól na tworzenie nakładających się eventów
     const newInstance: IRenderableBlock = {
       ...instance,
       id: `instance-${this._nextInstanceId++}`,
@@ -29,7 +28,6 @@ export class SchedulerEventInstancesStore {
         if (instance.id !== instanceId) return instance;
         const updatedPosition = { ...instance.position, ...position };
 
-        // Usuń sprawdzenie konfliktu - pozwól na aktualizację do nakładających się pozycji
         return { ...instance, position: updatedPosition };
       });
     });
@@ -42,10 +40,9 @@ export class SchedulerEventInstancesStore {
   public findAtPosition(
     x: number,
     y: number,
-    dateTimeToIndex: (time: Date) => number,
   ): IRenderableBlock[] {
     return this._eventInstances().filter(instance => {
-      const style = this.getPositionStyle(instance.position, dateTimeToIndex);
+      const style = this.getPositionStyle(instance.position);
       return (
         x >= style.left &&
         x <= style.left + style.width &&
@@ -55,56 +52,14 @@ export class SchedulerEventInstancesStore {
     });
   }
 
-  public hasConflict(
-    position: IEventBlockPosition,
-    excludeId?: string,
-  ): boolean {
-    return this._eventInstances().some(instance => {
-      if (excludeId && instance.id === excludeId) return false;
-
-      const roomsOverlap = position.rooms.some(r => instance.position.rooms.includes(r));
-      if (!roomsOverlap) return false;
-
-      const [ startA, endA ] = [ position.startTime, position.endTime ];
-      const [ startB, endB ] = [ instance.position.startTime, instance.position.endTime ];
-
-      // Porównanie dat - sprawdzamy czy okresy się nie nakładają
-      return !(endA <= startB || startA >= endB);
-    });
-  }
-
-  // Nowa metoda do sprawdzania konfliktów dla konkretnego eventu
-  public getConflictingInstances(instanceId: string): IRenderableBlock[] {
-    const targetInstance = this._eventInstances().find(instance => instance.id === instanceId);
-    if (!targetInstance) return [];
-
-    return this._eventInstances().filter(instance => {
-      if (instance.id === instanceId) return false;
-
-      const roomsOverlap = targetInstance.position.rooms.some(r => instance.position.rooms.includes(r));
-      if (!roomsOverlap) return false;
-
-      const [ startA, endA ] = [ targetInstance.position.startTime, targetInstance.position.endTime ];
-      const [ startB, endB ] = [ instance.position.startTime, instance.position.endTime ];
-
-      return !(endA <= startB || startA >= endB);
-    });
-  }
-
-  // Metoda do sprawdzania czy dany event ma konflikty
-  public hasConflictById(instanceId: string): boolean {
-    return this.getConflictingInstances(instanceId).length > 0;
-  }
-
   public getPositionStyle(
     position: IEventBlockPosition,
-    dateTimeToIndex: (time: Date) => number,
   ) {
     const gridSizeX = this.gridStore.gridSizeX();
     const gridSizeY = this.gridStore.gridSizeY();
 
-    const top = dateTimeToIndex(position.startTime) * gridSizeY;
-    const height = (dateTimeToIndex(position.endTime) - dateTimeToIndex(position.startTime)) * gridSizeY;
+    const top = this.gridStore.dateTimeToIndex(position.startTime) * gridSizeY;
+    const height = (this.gridStore.dateTimeToIndex(position.endTime) - this.gridStore.dateTimeToIndex(position.startTime)) * gridSizeY;
 
     const roomIndexes = position.rooms.map(r => this.gridStore.rooms().findIndex(x => x.name === r));
 

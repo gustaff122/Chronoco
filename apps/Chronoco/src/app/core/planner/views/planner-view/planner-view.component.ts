@@ -6,6 +6,9 @@ import { IRoom } from '@chronoco-fe/models/i-room';
 import { SchedulerEventInstancesStore } from './components/scheduler-grid/stores/scheduler-event-instances.store';
 import { SchedulerLegendStore } from './components/scheduler-grid/stores/scheduler-legend.store';
 import { SchedulerGridComponentStore } from './components/scheduler-grid/scheduler-grid.component.store';
+import { SchedulerGridScrollStore } from './components/scheduler-grid/stores/scheduler-grid-scroll.store';
+import { SchedulerGridInteractionsStore } from './components/scheduler-grid/stores/scheduler-grid-interactions/scheduler-grid-interactions.store';
+import { SchedulerGridListenersStore } from './components/scheduler-grid/stores/scheduler-grid-listeners.store';
 
 @Component({
   selector: 'app-planner-view',
@@ -20,6 +23,9 @@ import { SchedulerGridComponentStore } from './components/scheduler-grid/schedul
     SchedulerLegendStore,
     SchedulerEventInstancesStore,
     SchedulerGridComponentStore,
+    SchedulerGridScrollStore,
+    SchedulerGridInteractionsStore,
+    SchedulerGridListenersStore,
   ],
 })
 export class PlannerViewComponent {

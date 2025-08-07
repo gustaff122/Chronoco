@@ -1,0 +1,9 @@
+export enum InteractionMode {
+  NONE,
+  DRAGGING,
+  RESIZING_TOP,
+  RESIZING_BOTTOM,
+  RESIZING_LEFT,
+  RESIZING_RIGHT,
+  CREATING
+}

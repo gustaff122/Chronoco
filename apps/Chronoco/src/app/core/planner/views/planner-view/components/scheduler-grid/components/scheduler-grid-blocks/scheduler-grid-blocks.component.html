@@ -1,8 +1,8 @@
 <div
   (mousedown)="startSelectingHandler($event)"
-  (mouseup)="stopAutoScroll()"
+  (mouseup)="stopScrollHandler()"
   class="w-full h-full relative grid-container"
-  #container
+  #interactionContainer
 >
   @for (block of blockStyle(); track block.id) {
     <div

@@ -1,9 +1,9 @@
 <div class="flex flex-col pl-6 py-6 bg-gray-50">
-  @for (time of timeFrom() | appSchedulerGenerateHoursCaptions : timeTo(); track time; let isLast = $last; let isFirst = $first) {
+  @for (item of timeFrom() | appSchedulerGenerateHoursCaptions : timeTo(); track item.fullTime; let isLast = $last; let isFirst = $first) {
     <app-scheduler-grid-row-caption
       [isLast]="isLast"
       [isFirst]="isFirst"
-      [time]="time"
+      [time]="item.time"
     />
   }
 </div>

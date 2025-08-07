@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
+import { computed, inject, Injectable, Signal, signal, TransferState, WritableSignal } from '@angular/core';
 import { AuthService } from '../../services/auth-service/auth.service';
 import { IUser } from '../../services/auth-service/models/i-user';
 import { catchError, finalize, lastValueFrom, of, tap } from 'rxjs';
@@ -21,6 +21,7 @@ const DEFAULT_STATE: IAuthState = {
 export class AuthStore {
   private readonly authService: AuthService = inject(AuthService);
   private readonly router: Router = inject(Router);
+  private readonly transferState: TransferState = inject(TransferState);
 
   private readonly state: WritableSignal<IAuthState> = signal(DEFAULT_STATE);
 
@@ -39,7 +40,6 @@ export class AuthStore {
       )
       .subscribe((user) => {
         const { HOME } = RoutesEnum;
-        console.log(user);
         this.state.update(state => ({ ...state, user }));
         this.router.navigate([ HOME ]);
       });

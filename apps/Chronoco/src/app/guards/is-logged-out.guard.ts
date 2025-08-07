@@ -9,5 +9,7 @@ export const isLoggedOut: CanActivateFn = () => {
 
   const isLoggedOut = !authStore.isLoggedIn();
 
+  console.log('isLoggedOut', isLoggedOut);
+
   return isLoggedOut || router.parseUrl(RoutesEnum.HOME);
 };
