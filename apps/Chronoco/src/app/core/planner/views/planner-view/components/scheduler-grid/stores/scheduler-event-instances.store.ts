@@ -1,24 +1,24 @@
 import { inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
 import { IEventBlockPosition, IRenderableBlock } from '@chronoco-fe/models/i-event-block';
 import { SchedulerGridComponentStore } from '../scheduler-grid.component.store';
+import { ulid } from 'ulid';
 
 @Injectable()
 export class SchedulerEventInstancesStore {
   private readonly gridStore: SchedulerGridComponentStore = inject(SchedulerGridComponentStore);
 
   private readonly _eventInstances: WritableSignal<IRenderableBlock[]> = signal([]);
-  private _nextInstanceId = 1;
 
   public readonly eventInstances: Signal<IRenderableBlock[]> = this._eventInstances.asReadonly();
 
-  public create(instance: Omit<IRenderableBlock, 'id' | 'positionIndex'>): IRenderableBlock {
+  public create(instance: Omit<IRenderableBlock, 'id' | 'zIndex'>): IRenderableBlock {
     const newInstance: IRenderableBlock = {
       ...instance,
-      id: `instance-${this._nextInstanceId++}`,
-      positionIndex: 0,
+      id: `instance-${ulid()}`,
+      zIndex: this.eventInstances().length + 1,
     };
 
-    this._eventInstances.set([ ...this._eventInstances(), newInstance ]);
+    this._eventInstances.update(instances => [ ...instances, newInstance ]);
     return newInstance;
   }
 
@@ -69,4 +69,19 @@ export class SchedulerEventInstancesStore {
 
     return { top, height, left, width };
   }
+
+  public updateZIndexes(instanceId: string): void {
+    this._eventInstances.update((instances) => {
+      const others = instances.filter(b => b.id !== instanceId)
+        .sort((a, b) => a.zIndex - b.zIndex);
+
+      const updatedOthers = others.map((b, i) => ({ ...b, zIndex: i + 1 }));
+
+      const target = instances.find(b => b.id === instanceId)!;
+      const updatedTarget = { ...target, zIndex: instances.length };
+
+      return [ ...updatedOthers, updatedTarget ];
+    });
+  }
+
 }

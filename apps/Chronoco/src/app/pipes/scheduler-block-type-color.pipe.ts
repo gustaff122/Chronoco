@@ -8,6 +8,30 @@ export class SchedulerBlockTypeColorPipe implements PipeTransform {
   public transform(blockType: EventBlockType): string {
     switch (blockType) {
       case EventBlockType.COMPETITION:
+        return 'bg-emerald-300';
+      case EventBlockType.CONCERT:
+        return 'bg-pink-300';
+      case EventBlockType.LECTURE:
+        return 'bg-blue-300';
+      case EventBlockType.MOVIE:
+        return 'bg-cyan-300';
+      case EventBlockType.PANEL:
+        return 'bg-orange-300';
+      case EventBlockType.TECHNICAL:
+        return 'bg-red-300';
+      case EventBlockType.OTHER:
+        return 'bg-violet-300';
+    }
+  }
+}
+
+@Pipe({
+  name: 'appSchedulerBlockTypeColorIntense',
+})
+export class SchedulerBlockTypeColorIntensePipe implements PipeTransform {
+  public transform(blockType: EventBlockType): string {
+    switch (blockType) {
+      case EventBlockType.COMPETITION:
         return 'bg-emerald-400';
       case EventBlockType.CONCERT:
         return 'bg-pink-400';
@@ -24,3 +48,4 @@ export class SchedulerBlockTypeColorPipe implements PipeTransform {
     }
   }
 }
+

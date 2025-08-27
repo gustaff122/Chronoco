@@ -4,7 +4,8 @@
     "outDir": "../../dist/out-tsc",
     "types": [
       "node"
-    ]
+    ],
+    "moduleResolution": "bundler"
   },
   "files": [
     "src/main.ts",

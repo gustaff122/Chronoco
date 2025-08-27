@@ -1,11 +1,22 @@
 <div class="px-1 py-0.5 w-full h-full">
-  <div class="w-full h-full rounded-lg p-3 bg-blue-300">
+  <div
+    [class.shadow-xl]="block()?.id === currentFoundInstance()?.id"
+    [class.shadow-blue-400]="block()?.id === currentFoundInstance()?.id"
+    class="w-full h-full rounded-lg p-3 border border-solid border-gray-500 {{ block().legend.type | appSchedulerBlockTypeColor }}"
+  >
     <p class="text-xs font-medium text-gray-800">
       {{ block().legend.name }}
     </p>
-    <p class="text-xs text-gray-600 mt-0.5">
+
+    <p class="text-xs text-gray-700 mt-0.5">
       od {{ block().position.startTime | date : 'dd.MM, HH:mm' }} <br/>
       do {{ block().position.endTime | date : 'dd.MM, HH:mm' }}
     </p>
+
+    @if (block().legend?.description) {
+      <p class="text-xs text-gray-600 mt-3">
+        {{ block().legend?.description }}
+      </p>
+    }
   </div>
 </div>

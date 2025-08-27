@@ -8,3 +8,7 @@
 body {
   font-family: 'Jost', sans-serif;
 }
+
+.cdk-overlay-container {
+  @apply z-2xl;
+}

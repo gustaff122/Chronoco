@@ -3,7 +3,7 @@
     Remcon 2025
   </h3>
 
-  <app-row-selector/>
+  <app-row-selector [ngModel]="selectedDay()" (ngModelChange)="onDateChange($event)" [options]="dayOptions()"/>
 
   <div class="flex justify-center items-center gap-x-3 text-lg">
     <app-button-icon icon="heroArrowUpTray"/>

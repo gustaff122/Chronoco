@@ -5,13 +5,17 @@ import { SchedulerTranslateBlockTypePipe } from '../../pipes/scheduler-translate
 import { ModalComponent } from '../../ui/modal/modal.component';
 import { SchedulerLegendStore } from '@chronoco-fe/core/planner/views/planner-view/components/scheduler-grid/stores/scheduler-legend.store';
 import { ButtonComponent } from '@chronoco-fe/ui/button/button.component';
-import { InputComponent } from '@chronoco-fe/ui/input/input.component';
 import { SelectInputComponent } from '@chronoco-fe/ui/select-input/select-input.component';
 import { ISelectOption } from '@chronoco-fe/models/i-select-option';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { InputComponent } from '@chronoco-fe/ui/input/input.component';
+import { TextareaComponent } from '@chronoco-fe/ui/textarea/textarea.component';
+import { IEventBlock } from '@chronoco-fe/models/i-event-block';
 
 interface IAddLegendForm {
   name: FormControl<string>;
   blocksType: FormControl<EventBlockType>;
+  description: FormControl<string>;
 }
 
 @Component({
@@ -20,8 +24,9 @@ interface IAddLegendForm {
     ModalComponent,
     ReactiveFormsModule,
     ButtonComponent,
-    InputComponent,
     SelectInputComponent,
+    InputComponent,
+    TextareaComponent,
   ],
   templateUrl: './scheduler-add-edit-block-modal.component.html',
   styleUrl: './scheduler-add-edit-block-modal.component.css',
@@ -30,13 +35,15 @@ interface IAddLegendForm {
   ],
 })
 export class SchedulerAddEditBlockModalComponent implements OnInit {
+  public editedLegend: IEventBlock = inject(DIALOG_DATA);
+
   private readonly legendStore: SchedulerLegendStore = inject(SchedulerLegendStore);
   private readonly formBuilder: FormBuilder = inject(FormBuilder);
+  private readonly dialogRef: DialogRef = inject(DialogRef);
   private readonly schedulerTranslateBlockTypePipe: SchedulerTranslateBlockTypePipe = inject(SchedulerTranslateBlockTypePipe);
 
   public readonly blockTypes: Signal<EventBlockType[]> = computed(() => Object.values(EventBlockType));
-  public readonly blockTypesx: Signal<ISelectOption[]> = computed(() => Object.values(EventBlockType).map((el) => ({ display: this.schedulerTranslateBlockTypePipe.transform(el), value: el })));
-
+  public readonly blockTypesOptions: Signal<ISelectOption[]> = computed(() => Object.values(EventBlockType).map((el) => ({ display: this.schedulerTranslateBlockTypePipe.transform(el), value: el })));
 
   public form: FormGroup<IAddLegendForm>;
 
@@ -44,15 +51,32 @@ export class SchedulerAddEditBlockModalComponent implements OnInit {
     this.buildForm();
   }
 
-  public addLegendHandler(): void {
-    const { name, blocksType } = this.form.getRawValue();
-    this.legendStore.createLegendDefinition(name, blocksType);
+  public submitHandler(): void {
+    if (this.editedLegend) {
+      this.editLegendHandler();
+    } else {
+      this.addLegendHandler();
+    }
+
+    this.dialogRef.close();
+  }
+
+  private addLegendHandler(): void {
+    const { name, blocksType, description } = this.form.getRawValue();
+    this.legendStore.createLegendDefinition(name, blocksType, description);
+  }
+
+  private editLegendHandler(): void {
+    this.legendStore.updateLegendDefinition(this.editedLegend.id, this.form.getRawValue());
   }
 
   private buildForm(): void {
+    const blockTypeValue = this.editedLegend?.type || this.blockTypes()[0];
+
     this.form = this.formBuilder.group<IAddLegendForm>({
-      name: new FormControl(null, [ Validators.required ]),
-      blocksType: new FormControl(this.blockTypes()[0], [ Validators.required ]),
+      name: new FormControl(this.editedLegend?.name, [ Validators.required ]),
+      blocksType: new FormControl(blockTypeValue, [ Validators.required ]),
+      description: new FormControl(this.editedLegend?.description),
     });
   }
 }

@@ -33,7 +33,7 @@ export class SchedulerGenerateHoursCaptionsPipe implements PipeTransform {
     const minutes = date.getMinutes().toString().padStart(2, '0');
     return {
       time: `${hours}:${minutes}`,
-      fullTime: date.toISOString(),
+      fullTime: date.toLocaleString('sv-SE').replace(' ', 'T'),
     };
   }
 }

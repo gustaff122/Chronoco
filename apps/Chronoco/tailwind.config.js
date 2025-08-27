@@ -8,7 +8,12 @@ module.exports = {
     ...createGlobPatternsForDependencies(__dirname),
   ],
   theme: {
-    extend: {},
+    extend: {
+      zIndex: {
+        '2xl': '2147483647',
+        'xl': '2147483646',
+      },
+    },
   },
   plugins: [],
 };

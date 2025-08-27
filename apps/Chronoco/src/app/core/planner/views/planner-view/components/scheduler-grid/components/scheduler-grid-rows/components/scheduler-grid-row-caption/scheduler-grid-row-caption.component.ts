@@ -21,4 +21,5 @@ export class SchedulerGridRowCaptionComponent {
   public readonly SCHEDULER_HOUR_CAPTION_HEIGHT: number = SCHEDULER_HOUR_CAPTION_HEIGHT;
 
   public readonly timeTo: Signal<Date> = this.gridComponentStore.timeTo;
+  public readonly timeFrom: Signal<Date> = this.gridComponentStore.timeFrom;
 }

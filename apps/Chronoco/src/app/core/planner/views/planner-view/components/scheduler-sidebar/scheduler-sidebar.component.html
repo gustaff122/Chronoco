@@ -1,6 +1,23 @@
-<aside class="bg-zinc-900 relative w-full bg- h-full rounded-xl text-gray-100 p-5 flex flex-col gap-y-6">
+<aside class="bg-zinc-900 relative w-full bg- h-full rounded-xl text-gray-100 px-5 pb-5 flex flex-col gap-y-4">
   <form [formGroup]="form" class="relative">
     <app-input formControlName="search" inputId="search" inputType="text" placeholder="Szukaj..." [search]="true" class="ps-8"/>
+    <div class="mt-4 text-xs flex h-[18px] justify-between w-full items-center">
+      @if (searchFilter()) {
+        <span class="text-gray-300 me-2">
+            {{ currentFoundInstanceNumber() }}/{{ foundInstancesCount() }}
+        </span>
+
+        <div class="flex gap-x-3 items-center justify-end w-full">
+          <button (click)="scrollToPreviousInstanceHandler()" type="button" class="text-gray-300 text-lg flex items-center justify-center">
+            <ng-icon name="heroChevronLeft"/>
+          </button>
+
+          <button (click)="scrollToNextInstanceHandler()" type="button" class="text-gray-300 text-lg flex items-center justify-center">
+            <ng-icon name="heroChevronRight"/>
+          </button>
+        </div>
+      }
+    </div>
   </form>
 
   <app-scheduler-sidebar-blocks-list [blocksType]="EventBlockType.LECTURE"/>

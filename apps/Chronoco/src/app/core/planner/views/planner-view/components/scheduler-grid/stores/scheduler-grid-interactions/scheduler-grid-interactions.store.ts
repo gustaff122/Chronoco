@@ -1,5 +1,5 @@
 import { ElementRef, inject, Injectable, Signal } from '@angular/core';
-import { IEventBlockPosition, IRenderableBlock } from '@chronoco-fe/models/i-event-block';
+import { IEventBlockPosition, IOperationalBlock, IRenderableBlock } from '@chronoco-fe/models/i-event-block';
 import { SchedulerEventInstancesStore } from '../scheduler-event-instances.store';
 import { SchedulerGridComponentStore } from '../../scheduler-grid.component.store';
 import { SchedulerGridScrollStore } from '../scheduler-grid-scroll.store';
@@ -15,7 +15,7 @@ export class SchedulerGridInteractionsStore implements IInteractionContext {
 
   public readonly eventInstancesStore: SchedulerEventInstancesStore = inject(SchedulerEventInstancesStore);
   public readonly gridStore: SchedulerGridComponentStore = inject(SchedulerGridComponentStore);
-  private readonly scrollStore: SchedulerGridScrollStore = inject(SchedulerGridScrollStore);
+  private readonly gridScrollStore: SchedulerGridScrollStore = inject(SchedulerGridScrollStore);
   private readonly listenersStore: SchedulerGridListenersStore = inject(SchedulerGridListenersStore);
   private readonly legendStore: SchedulerLegendStore = inject(SchedulerLegendStore);
   private readonly strategyRegistry: InteractionStrategyRegistry = new InteractionStrategyRegistry();
@@ -25,7 +25,6 @@ export class SchedulerGridInteractionsStore implements IInteractionContext {
   private readonly edgeThreshold = 10;
 
   public originalPosition: IEventBlockPosition = null;
-  private hasCollision = false;
 
   private startMouseX = 0;
   private startMouseY = 0;
@@ -42,7 +41,7 @@ export class SchedulerGridInteractionsStore implements IInteractionContext {
     };
   }
 
-  public onBlockMouseMove(event: MouseEvent, block: any): void {
+  public onBlockMouseMove(event: MouseEvent, block: IOperationalBlock): void {
     if (this.mode !== InteractionMode.NONE) return;
 
     const cursor = this.getCursorType(event, block);
@@ -82,7 +81,7 @@ export class SchedulerGridInteractionsStore implements IInteractionContext {
     container.nativeElement.style.cursor = cursor;
   }
 
-  public getCursorType(event: MouseEvent, block: any): string {
+  public getCursorType(event: MouseEvent, block: IOperationalBlock): string {
     const mousePos = this.getMousePosition(event);
     if (!mousePos) return 'default';
 
@@ -118,7 +117,7 @@ export class SchedulerGridInteractionsStore implements IInteractionContext {
     const deltaX = mousePos.x - this.startMouseX;
     const deltaY = mousePos.y - this.startMouseY;
 
-    this.scrollStore.updateAutoScroll(event.clientX, event.clientY);
+    this.gridScrollStore.updateAutoScroll(event.clientX, event.clientY);
 
     const strategy = this.strategyRegistry.get(this.mode);
     if (strategy && this.activeInstanceId && this.originalPosition) {
@@ -127,18 +126,9 @@ export class SchedulerGridInteractionsStore implements IInteractionContext {
   }
 
   public stopSelectingHandler() {
-    if (this.hasCollision && this.originalPosition && this.activeInstanceId) {
-      if (this.mode === InteractionMode.CREATING) {
-        this.eventInstancesStore.delete(this.activeInstanceId);
-      } else {
-        this.updateActiveInstance(this.originalPosition);
-      }
-    }
-
     this.mode = InteractionMode.NONE;
     this.activeInstanceId = null;
     this.originalPosition = null;
-    this.hasCollision = false;
 
     const container = this.interactionContainer();
     if (container) {
@@ -150,7 +140,7 @@ export class SchedulerGridInteractionsStore implements IInteractionContext {
 
   public cleanup(): void {
     this.listenersStore.detachDocumentListeners();
-    this.scrollStore.stopAutoScroll();
+    this.gridScrollStore.stopAutoScroll();
   }
 
   private startInstanceInteraction(instance: IRenderableBlock, mousePos: { x: number, y: number }, event: MouseEvent) {
@@ -160,6 +150,7 @@ export class SchedulerGridInteractionsStore implements IInteractionContext {
     this.startMouseY = mousePos.y;
 
     const style = this.eventInstancesStore.getPositionStyle(instance.position);
+    this.eventInstancesStore.updateZIndexes(instance.id);
 
     const distanceFromTop = mousePos.y - style.top;
     const distanceFromBottom = style.top + style.height - mousePos.y;
@@ -202,8 +193,7 @@ export class SchedulerGridInteractionsStore implements IInteractionContext {
     const startDate = this.indexToDateTime(rowIndex);
     const endDate = this.indexToDateTime(rowIndex + 1);
 
-    const newPosition: Omit<IRenderableBlock, 'id' | 'positionIndex'> = {
-      legendId: selectedLegend.id,
+    const newPosition: Omit<IRenderableBlock, 'id' | 'zIndex'> = {
       position: {
         rooms: [ rooms[colIndex].name ],
         startTime: startDate,

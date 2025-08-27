@@ -18,17 +18,17 @@ import { SchedulerGridScrollStore } from './stores/scheduler-grid-scroll.store';
 export class SchedulerGridComponent {
   public rooms: InputSignal<IRoom[]> = input.required();
   public timeFrom: InputSignal<Date> = input(new Date(2025, 1, 14, 0, 0, 0, 0));
-  public timeTo: InputSignal<Date> = input(new Date(2025, 1, 16, 23, 59, 0, 0));
+  public timeTo: InputSignal<Date> = input(new Date(2025, 1, 17, 0, 0, 0, 0));
 
   public readonly scrollContainer: Signal<ElementRef<HTMLElement>> = viewChild('scrollContainer');
 
   private readonly componentStore: SchedulerGridComponentStore = inject(SchedulerGridComponentStore);
-  private readonly scrollStore: SchedulerGridScrollStore = inject(SchedulerGridScrollStore);
+  private readonly gridScrollStore: SchedulerGridScrollStore = inject(SchedulerGridScrollStore);
 
   constructor() {
     this.componentStore.rooms = this.rooms;
     this.componentStore.timeFrom = this.timeFrom;
     this.componentStore.timeTo = this.timeTo;
-    this.scrollStore.scrollContainer = this.scrollContainer;
+    this.gridScrollStore.scrollContainer = this.scrollContainer;
   }
 }

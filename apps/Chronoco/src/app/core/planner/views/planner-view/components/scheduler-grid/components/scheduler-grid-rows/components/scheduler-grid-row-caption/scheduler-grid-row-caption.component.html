@@ -1,4 +1,4 @@
-<div class="w-16 relative" [style.height.px]="isLast() ? SCHEDULER_HOUR_CAPTION_HEIGHT : (time() | appSchedulerHourHeight : timeTo())">
+<div class="w-16 relative" [style.height.px]="isLast() ? SCHEDULER_HOUR_CAPTION_HEIGHT : (time() | appSchedulerHourHeight : timeFrom() : timeTo())">
       <span class="absolute top-0 text-gray-500 text-sm -translate-y-1/2">
         {{ time() }}
       </span>

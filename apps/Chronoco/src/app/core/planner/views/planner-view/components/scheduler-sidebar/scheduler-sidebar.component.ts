@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, Signal } from '@angular/core';
 import { SchedulerSidebarBlocksListComponent } from './components/scheduler-sidebar-blocks-list/scheduler-sidebar-blocks-list.component';
 import { Dialog } from '@angular/cdk/dialog';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -7,6 +7,10 @@ import { EventBlockType } from '@chronoco-fe/models/event-block-type.enum';
 import { SchedulerLegendStore } from '../scheduler-grid/stores/scheduler-legend.store';
 import { ButtonComponent } from '@chronoco-fe/ui/button/button.component';
 import { InputComponent } from '@chronoco-fe/ui/input/input.component';
+import { SchedulerSearchStore } from '../scheduler-grid/stores/scheduler-search.store';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { heroChevronLeft, heroChevronRight } from '@ng-icons/heroicons/outline';
+import { SchedulerSearchScrollStore } from '../scheduler-grid/stores/scheduler-search-scroll.store';
 
 interface ISearchForm {
   search: FormControl<string>;
@@ -19,17 +23,26 @@ interface ISearchForm {
     ReactiveFormsModule,
     ButtonComponent,
     InputComponent,
+    NgIcon,
   ],
   templateUrl: './scheduler-sidebar.component.html',
   styleUrl: './scheduler-sidebar.component.css',
-
+  viewProviders: [
+    provideIcons({ heroChevronLeft, heroChevronRight }),
+  ],
 })
 export class SchedulerSidebarComponent implements OnInit {
   private readonly dialog: Dialog = inject(Dialog);
   private readonly legendStore: SchedulerLegendStore = inject(SchedulerLegendStore);
+  private readonly searchStore: SchedulerSearchStore = inject(SchedulerSearchStore);
   private readonly formBuilder: FormBuilder = inject(FormBuilder);
   private readonly destroyRef: DestroyRef = inject(DestroyRef);
-  protected readonly EventBlockType = EventBlockType;
+  private readonly searchScrollStore: SchedulerSearchScrollStore = inject(SchedulerSearchScrollStore);
+  protected readonly EventBlockType: typeof EventBlockType = EventBlockType;
+
+  public readonly foundInstancesCount: Signal<number> = this.searchScrollStore.foundInstancesCount;
+  public readonly currentFoundInstanceNumber: Signal<number> = this.searchScrollStore.currentFoundInstanceNumber;
+  public readonly searchFilter: Signal<string> = this.searchStore.searchFilter;
 
   public form: FormGroup<ISearchForm>;
 
@@ -37,7 +50,15 @@ export class SchedulerSidebarComponent implements OnInit {
     this.buildForm();
     this.initFormListener();
 
-    this.legendStore.createLegendDefinition('Scheduler', EventBlockType.LECTURE);
+    this.legendStore.createLegendDefinition('Scheduler', EventBlockType.LECTURE, null);
+  }
+
+  public scrollToNextInstanceHandler(): void {
+    this.searchScrollStore.scrollToNextInstance();
+  }
+
+  public scrollToPreviousInstanceHandler(): void {
+    this.searchScrollStore.scrollToPreviousInstance();
   }
 
   public openAddModal(): void {
@@ -54,7 +75,9 @@ export class SchedulerSidebarComponent implements OnInit {
   }
 
   private initFormListener(): void {
-    this.form.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(({ search }) => this.legendStore.search(search));
+    this.form.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(({ search }) => this.searchStore.search(search));
   }
 
   private buildForm(): void {

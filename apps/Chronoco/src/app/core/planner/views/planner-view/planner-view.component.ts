@@ -9,6 +9,9 @@ import { SchedulerGridComponentStore } from './components/scheduler-grid/schedul
 import { SchedulerGridScrollStore } from './components/scheduler-grid/stores/scheduler-grid-scroll.store';
 import { SchedulerGridInteractionsStore } from './components/scheduler-grid/stores/scheduler-grid-interactions/scheduler-grid-interactions.store';
 import { SchedulerGridListenersStore } from './components/scheduler-grid/stores/scheduler-grid-listeners.store';
+import { SchedulerGridDayScrollingStore } from './components/scheduler-grid/stores/scheduler-grid-day-scrolling.store';
+import { SchedulerSearchStore } from './components/scheduler-grid/stores/scheduler-search.store';
+import { SchedulerSearchScrollStore } from './components/scheduler-grid/stores/scheduler-search-scroll.store';
 
 @Component({
   selector: 'app-planner-view',
@@ -20,12 +23,15 @@ import { SchedulerGridListenersStore } from './components/scheduler-grid/stores/
   templateUrl: './planner-view.component.html',
   styleUrl: './planner-view.component.css',
   providers: [
+    SchedulerGridComponentStore,
     SchedulerLegendStore,
     SchedulerEventInstancesStore,
-    SchedulerGridComponentStore,
     SchedulerGridScrollStore,
     SchedulerGridInteractionsStore,
+    SchedulerGridDayScrollingStore,
     SchedulerGridListenersStore,
+    SchedulerSearchStore,
+    SchedulerSearchScrollStore,
   ],
 })
 export class PlannerViewComponent {

@@ -4,13 +4,18 @@
   class="w-full h-full relative grid-container"
   #interactionContainer
 >
-  @for (block of blockStyle(); track block.id) {
+  @for (block of blockStyle(); track block.instance.id) {
     <div
-      class="event-block"
-      [ngStyle]="block.style"
+      class="absolute transition-opacity"
+      [style.top.px]="block?.top"
+      [style.left.px]="block?.left"
+      [style.height.px]="block?.height"
+      [style.width.px]="block?.width"
+      [style.z-index]="block?.instance.zIndex"
+      [style.opacity]="block?.opacity"
       (mousemove)="onBlockMouseMove($event, block)"
       (mouseleave)="onBlockMouseLeave($event)">
-      <app-scheduler-grid-single-block [block]="block.instance"/>
+      <app-scheduler-grid-single-block [block]="block.instance" [id]="block.instance.id"/>
     </div>
   }
 </div>

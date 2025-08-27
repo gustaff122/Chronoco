@@ -1,11 +1,11 @@
 import { EventBlockType } from './event-block-type.enum';
 
 export interface IEventBlock {
-  id: number;
+  id: string;
   type: EventBlockType;
   positions: IEventBlockPosition[];
   name: string;
-  color?: string;
+  description?: string;
 }
 
 export interface IEventBlockPosition {
@@ -16,8 +16,15 @@ export interface IEventBlockPosition {
 
 export interface IRenderableBlock {
   id: string;
-  legendId: number;
-  positionIndex: number;
   position: IEventBlockPosition;
   legend: IEventBlock;
+  zIndex: number;
+}
+
+export interface IOperationalBlock {
+  instance: IRenderableBlock;
+  top: number,
+  width: number,
+  left: number,
+  height: number,
 }

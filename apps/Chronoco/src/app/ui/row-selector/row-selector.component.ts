@@ -8,7 +8,7 @@ import { ISelectOption } from '@chronoco-fe/models/i-select-option';
   styleUrl: './row-selector.component.css',
 })
 export class RowSelectorComponent implements ControlValueAccessor {
-  public options: InputSignal<ISelectOption[]> = input([ { value: 'friday', display: 'Piątek' }, { value: 'saturday', display: 'Sobota' }, { value: 'sunday', display: 'Niedziela' } ]);
+  public options: InputSignal<ISelectOption[]> = input([]);
   public selectedValue: ISelectOption = null;
 
   constructor(
@@ -17,6 +17,11 @@ export class RowSelectorComponent implements ControlValueAccessor {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
+  }
+
+  public updateChanges(option: ISelectOption): void {
+    this.writeValue(option);
+    this.onChange(this.selectedValue);
   }
 
   public writeValue(value: ISelectOption): void {
