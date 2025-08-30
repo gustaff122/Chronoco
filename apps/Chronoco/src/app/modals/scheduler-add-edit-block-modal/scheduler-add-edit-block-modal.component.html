@@ -8,7 +8,7 @@
 
     <div class="flex justify-end">
       <app-button btnType="submit" class="w-fit" severity="outline">
-        Dodaj
+        {{ editedLegend ? 'Aktualizuj' : 'Dodaj' }}
       </app-button>
     </div>
   </form>

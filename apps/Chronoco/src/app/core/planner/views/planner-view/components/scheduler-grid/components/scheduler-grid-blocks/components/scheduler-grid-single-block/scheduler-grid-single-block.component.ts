@@ -3,12 +3,14 @@ import { IRenderableBlock } from '@chronoco-fe/models/i-event-block';
 import { DatePipe } from '@angular/common';
 import { SchedulerBlockTypeColorPipe } from '@chronoco-fe/pipes/scheduler-block-type-color.pipe';
 import { SchedulerSearchScrollStore } from '../../../../stores/scheduler-search-scroll.store';
+import { DurationInMinutesPipe } from '@chronoco-fe/pipes/scheduler-duration-in-minutes.pipe';
 
 @Component({
   selector: 'app-scheduler-grid-single-block',
   imports: [
     DatePipe,
     SchedulerBlockTypeColorPipe,
+    DurationInMinutesPipe,
   ],
   templateUrl: './scheduler-grid-single-block.component.html',
   styleUrl: './scheduler-grid-single-block.component.css',

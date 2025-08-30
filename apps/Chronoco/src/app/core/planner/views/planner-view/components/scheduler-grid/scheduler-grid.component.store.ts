@@ -12,13 +12,13 @@ export class SchedulerGridComponentStore {
   public readonly interval: Signal<number> = signal(15).asReadonly();
 
   public indexToDateTime(index: number): Date {
-    const offsetMs = index * 15 * 60 * 1000;
+    const offsetMs = index * this.gridSizeY() * 60 * 1000;
     return new Date(this.timeFrom()?.getTime() + offsetMs);
   }
 
   public getTotalRows(): number {
     const diffMs = this.timeTo().getTime() - this.timeFrom().getTime();
-    return Math.floor(diffMs / (15 * 60 * 1000));
+    return Math.floor(diffMs / (this.gridSizeY() * 60 * 1000));
   }
 
   public dateTimeToIndex(dateTime: Date): number {
@@ -27,8 +27,6 @@ export class SchedulerGridComponentStore {
     }
 
     const diffMs = dateTime?.getTime() - this.timeFrom()?.getTime();
-    const quarterHours = Math.floor(diffMs / (15 * 60 * 1000));
-
-    return quarterHours;
+    return Math.floor(diffMs / (this.gridSizeY() * 60 * 1000));
   }
 }

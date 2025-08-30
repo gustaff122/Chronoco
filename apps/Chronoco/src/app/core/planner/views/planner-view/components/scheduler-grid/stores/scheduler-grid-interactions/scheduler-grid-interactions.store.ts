@@ -22,7 +22,7 @@ export class SchedulerGridInteractionsStore implements IInteractionContext {
 
   private mode: InteractionMode = InteractionMode.NONE;
   public activeInstanceId: string = null;
-  private readonly edgeThreshold = 10;
+  private readonly edgeThreshold = 5;
 
   public originalPosition: IEventBlockPosition = null;
 
@@ -223,8 +223,10 @@ export class SchedulerGridInteractionsStore implements IInteractionContext {
   }
 
   public startSelectingHandler(event: MouseEvent) {
+    const isOnRemoveBtn = ((event.target as HTMLElement).closest('.scheduler-block-remove'));
     const mousePos = this.getMousePosition(event);
-    if (!mousePos) return;
+
+    if (!mousePos || isOnRemoveBtn) return;
 
     const clickedInstances = this.eventInstancesStore.findAtPosition(
       mousePos.x,
