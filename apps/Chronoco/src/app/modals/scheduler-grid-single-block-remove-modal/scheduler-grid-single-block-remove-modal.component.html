@@ -1,0 +1,13 @@
+<lib-modal caption="Usuń blok">
+  <h3>Czy jesteś pewien, że chcesz usunąć ten blok?</h3>
+
+  <div class="w-full flex justify-end gap-x-3">
+    <app-button (click)="closeModalHandler()" size="md" btnType="button" severity="outline">
+      Nie, anuluj
+    </app-button>
+
+    <app-button (click)="removeInstanceHandler()" size="md" btnType="button">
+      Tak, usuń
+    </app-button>
+  </div>
+</lib-modal>

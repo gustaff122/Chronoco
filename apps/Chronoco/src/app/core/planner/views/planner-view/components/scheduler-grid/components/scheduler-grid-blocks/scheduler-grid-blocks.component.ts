@@ -7,6 +7,7 @@ import { SchedulerEventInstancesStore } from '../../stores/scheduler-event-insta
 import { SchedulerGridScrollStore } from '../../stores/scheduler-grid-scroll.store';
 import { SchedulerGridInteractionsStore } from '../../stores/scheduler-grid-interactions/scheduler-grid-interactions.store';
 import { SchedulerSearchStore } from '../../stores/scheduler-search.store';
+import { SchedulerGridSingleBlockRemoveBtnComponent } from './components/scheduler-grid-single-block-remove-btn/scheduler-grid-single-block-remove-btn.component';
 
 
 @Component({
@@ -15,6 +16,7 @@ import { SchedulerSearchStore } from '../../stores/scheduler-search.store';
   styleUrls: [ './scheduler-grid-blocks.component.css' ],
   imports: [
     SchedulerGridSingleBlockComponent,
+    SchedulerGridSingleBlockRemoveBtnComponent,
   ],
 })
 export class SchedulerGridBlocksComponent implements OnDestroy {

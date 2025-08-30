@@ -12,9 +12,7 @@ export class SchedulerGridBlockHeightPipe implements PipeTransform {
     if (diff < 0) {
       diff += 24 * 60;
     }
-
-    console.log(diff * pxPerMinute);
-
+    
     return diff * pxPerMinute;
   }
 }

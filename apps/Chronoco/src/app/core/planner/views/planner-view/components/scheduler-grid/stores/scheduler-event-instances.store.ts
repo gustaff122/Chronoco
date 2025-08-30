@@ -72,15 +72,20 @@ export class SchedulerEventInstancesStore {
 
   public updateZIndexes(instanceId: string): void {
     this._eventInstances.update((instances) => {
-      const others = instances.filter(b => b.id !== instanceId)
+      const others = instances
+        .filter(b => b.id !== instanceId)
         .sort((a, b) => a.zIndex - b.zIndex);
 
-      const updatedOthers = others.map((b, i) => ({ ...b, zIndex: i + 1 }));
+      const zIndexMap = new Map<string, number>(
+        others.map((b, i) => [ b.id, i + 1 ]),
+      );
+      
+      zIndexMap.set(instanceId, instances.length);
 
-      const target = instances.find(b => b.id === instanceId)!;
-      const updatedTarget = { ...target, zIndex: instances.length };
-
-      return [ ...updatedOthers, updatedTarget ];
+      return instances.map(b => ({
+        ...b,
+        zIndex: zIndexMap.get(b.id)!,
+      }));
     });
   }
 

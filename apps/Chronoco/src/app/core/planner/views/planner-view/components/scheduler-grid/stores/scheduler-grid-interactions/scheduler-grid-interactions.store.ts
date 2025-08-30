@@ -44,8 +44,7 @@ export class SchedulerGridInteractionsStore implements IInteractionContext {
   public onBlockMouseMove(event: MouseEvent, block: IOperationalBlock): void {
     if (this.mode !== InteractionMode.NONE) return;
 
-    const cursor = this.getCursorType(event, block);
-    (event.target as HTMLElement).style.cursor = cursor;
+    (event.target as HTMLElement).style.cursor = this.getCursorType(event, block);
   }
 
   public onBlockMouseLeave(event: MouseEvent): void {
@@ -82,6 +81,10 @@ export class SchedulerGridInteractionsStore implements IInteractionContext {
   }
 
   public getCursorType(event: MouseEvent, block: IOperationalBlock): string {
+    if ((event.target as HTMLElement).closest('.scheduler-block-remove')) {
+      return 'pointer';
+    }
+
     const mousePos = this.getMousePosition(event);
     if (!mousePos) return 'default';
 
@@ -143,7 +146,7 @@ export class SchedulerGridInteractionsStore implements IInteractionContext {
     this.gridScrollStore.stopAutoScroll();
   }
 
-  private startInstanceInteraction(instance: IRenderableBlock, mousePos: { x: number, y: number }, event: MouseEvent) {
+  private startInstanceInteraction(instance: IRenderableBlock, mousePos: { x: number, y: number }, event: MouseEvent): void {
     this.activeInstanceId = instance.id;
     this.originalPosition = { ...instance.position };
     this.startMouseX = mousePos.x;
@@ -217,12 +220,6 @@ export class SchedulerGridInteractionsStore implements IInteractionContext {
 
     event.preventDefault();
     event.stopPropagation();
-  }
-
-  private updateActiveInstance(updates: Partial<IEventBlockPosition>) {
-    if (!this.activeInstanceId) return;
-
-    this.eventInstancesStore.update(this.activeInstanceId, updates);
   }
 
   public startSelectingHandler(event: MouseEvent) {

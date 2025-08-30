@@ -6,7 +6,7 @@
 >
   @for (block of blockStyle(); track block.instance.id) {
     <div
-      class="absolute transition-opacity"
+      class="absolute transition-opacity group"
       [style.top.px]="block?.top"
       [style.left.px]="block?.left"
       [style.height.px]="block?.height"
@@ -16,6 +16,12 @@
       (mousemove)="onBlockMouseMove($event, block)"
       (mouseleave)="onBlockMouseLeave($event)">
       <app-scheduler-grid-single-block [block]="block.instance" [id]="block.instance.id"/>
+
+      <div class="scheduler-block-remove absolute transition-opacity opacity-0 group-hover:opacity-100 top-0 right-0 -translate-y-1/3 translate-x-1/3"
+           [style.z-index]="block?.instance.zIndex + 1"
+      >
+        <app-scheduler-grid-single-block-remove-btn [instance]="block.instance"/>
+      </div>
     </div>
   }
 </div>
