@@ -27,7 +27,7 @@ export class SchedulerSearchScrollStore {
   private readonly foundInstances: Signal<IInstance[]> = computed(() => {
     return this.instancesStore.instances()
       .filter(block => {
-        const blockLegend = this.legendStore.filteredLegends().find(({ id }) => id === block.id);
+        const blockLegend = this.legendStore.filteredLegends().find(({ id }) => id === block.legendId);
         return blockLegend?.name?.toLowerCase().includes(this.searchFilter()?.toLowerCase());
       });
   });
