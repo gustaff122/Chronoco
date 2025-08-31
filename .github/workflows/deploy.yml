@@ -24,11 +24,11 @@ jobs:
 
       - name: Build backend (NestJS)
         run: |
-          nx build chronoco-api
+          npx nx build chronoco-api
 
       - name: Build frontend (Angular)
         run: |
-          nx build Chronoco
+          npx nx build Chronoco
 
       - name: Deploy to Mikrus
         uses: appleboy/scp-action@v0.1.7
