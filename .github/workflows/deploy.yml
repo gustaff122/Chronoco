@@ -1,0 +1,50 @@
+name: Deploy to Mikrus
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install packages
+        run: |
+          npm install --force
+
+      - name: Build backend (NestJS)
+        run: |
+          nx build chronoco-api
+
+      - name: Build frontend (Angular)
+        run: |
+          nx build Chronoco
+
+      - name: Deploy to Mikrus
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.MIKRUS_HOST }}
+          username: ${{ secrets.MIKRUS_USER }}
+          key: ${{ secrets.MIKRUS_SSH_KEY }}
+          source: "dist/*"
+          target: "/home/deploy/apps"
+      
+      - name: Restart PM2 on Mikrus
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.MIKRUS_HOST }}
+          username: ${{ secrets.MIKRUS_USER }}
+          key: ${{ secrets.MIKRUS_SSH_KEY }}
+          script: |
+            cd /home/deploy/apps/chronoco-api
+            pm2 restart api || pm2 start main.js --name api
