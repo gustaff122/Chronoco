@@ -35,6 +35,6 @@ export class SchedulerGridInteractionsDraggingStrategy implements IInteractionSt
       endTime: ctx.indexToDateTime(newEndRow),
     };
 
-    ctx.eventInstancesStore.update(ctx.activeInstanceId, newPosition);
+    ctx.instancesStore.update(ctx.activeInstanceId, newPosition);
   }
 }

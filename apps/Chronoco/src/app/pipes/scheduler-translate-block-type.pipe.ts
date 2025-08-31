@@ -1,25 +1,25 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { EventBlockType } from '../models/event-block-type.enum';
+import { LegendType } from '@chronoco-fe/models/legend-type.enum';
 
 @Pipe({
   name: 'appSchedulerTranslateBlockType',
 })
 export class SchedulerTranslateBlockTypePipe implements PipeTransform {
-  public transform(blockType: EventBlockType): string {
+  public transform(blockType: LegendType): string {
     switch (blockType) {
-      case EventBlockType.COMPETITION:
+      case LegendType.COMPETITION:
         return 'Konkursy';
-      case EventBlockType.CONCERT:
+      case LegendType.CONCERT:
         return 'Koncerty';
-      case EventBlockType.LECTURE:
+      case LegendType.LECTURE:
         return 'Prelekcje';
-      case EventBlockType.MOVIE:
+      case LegendType.MOVIE:
         return 'Filmy';
-      case EventBlockType.PANEL:
+      case LegendType.PANEL:
         return 'Panele';
-      case EventBlockType.TECHNICAL:
+      case LegendType.TECHNICAL:
         return 'Techniczne';
-      case EventBlockType.OTHER:
+      case LegendType.OTHER:
         return 'Inne';
     }
   }

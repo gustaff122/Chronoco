@@ -1,0 +1,58 @@
+<app-page-container caption="Wydarzenia">
+  <ng-container actions [ngTemplateOutlet]="actionsTpl"/>
+
+  <div class="flex flex-col gap-y-10">
+    <ng-container [ngTemplateOutlet]="loading() ? loadingTpl : inPlanningTpl"/>
+    <ng-container [ngTemplateOutlet]="loading() ? loadingTpl : ongoingsTpl"/>
+    <ng-container [ngTemplateOutlet]="loading() ? loadingTpl : upcomingsTpl"/>
+    <ng-container [ngTemplateOutlet]="loading() ? loadingTpl : pastTpl"/>
+  </div>
+</app-page-container>
+
+<ng-template #actionsTpl>
+  <a [routerLink]="RoutesEnum.EVENTS_ADD">
+    <app-button size="md" btnType="button">
+      Dodaj nowe wydarzenie
+    </app-button>
+  </a>
+</ng-template>
+
+<ng-template #loadingTpl>
+  <div class="grid mt-4 gap-4 grid-cols-5">
+    <div class="w-full rounded h-56 border border-solid border-gray-200 bg-gray-100 animate-pulse">
+    </div>
+
+    <div class="w-full rounded h-56 border border-solid border-gray-200 bg-gray-100 animate-pulse">
+    </div>
+
+    <div class="w-full rounded h-56 border border-solid border-gray-200 bg-gray-100 animate-pulse">
+    </div>
+
+    <div class="w-full rounded h-56 border border-solid border-gray-200 bg-gray-100 animate-pulse">
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #inPlanningTpl>
+  <app-events-list
+    caption="Wybrane wydarzenie do planowania"
+    [items]="[upcomingList()[0]]"/>
+</ng-template>
+
+<ng-template #ongoingsTpl>
+  <app-events-list
+    caption="Aktualnie trwające wydarzenia"
+    [items]="ongoingList()"/>
+</ng-template>
+
+<ng-template #upcomingsTpl>
+  <app-events-list
+    caption="Nachodzące wydarzenia"
+    [items]="upcomingList()"/>
+</ng-template>
+
+<ng-template #pastTpl>
+  <app-events-list
+    caption="Przeszłe wydarzenia"
+    [items]="pastList()"/>
+</ng-template>

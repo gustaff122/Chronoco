@@ -3,15 +3,23 @@
     <ng-icon class="text-lg absolute left-2 top-1/2 -translate-y-1/2" name="heroMagnifyingGlass"/>
   }
   @if (label()) {
-    <label [for]="inputId()" class="block mb-2 text-sm font-medium text-zinc-300">{{ label() }}</label>
+    <label [for]="inputId()" class="block mb-2 text-sm font-medium {{ theme() === 'dark' ? 'text-zinc-300' : 'text-zinc-600'}}">
+      {{ label() }}@if (isRequired()) {
+      <span class="text-red-500">*</span>
+    }
+    </label>
   }
   <input [(ngModel)]="value"
          (ngModelChange)="updateChanges()"
+         [disabled]="isDisabled()"
          [type]="inputType()"
          [id]="inputId()"
          [placeholder]="placeholder() || ''"
          [class.pl-8]="search()"
          autocomplete="off"
-         class="text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white"
+         class="text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5
+                {{ theme() === 'dark' ? 'themed-dark bg-gray-700 disabled:bg-gray-900 border-gray-600 placeholder:text-gray-400 text-white'
+                   : 'themed-light bg-white disabled:bg-gray-200 border border-solid border-gray-300 placeholder:text-gray-400 text-gray-700'}}
+         "
   />
 </div>

@@ -1,3 +1,3 @@
-<button class="{{ severityClasses() }} {{ sizeClasses() }} w-full transition-colors h-full" [type]="btnType()">
+<button class="{{ severityClasses() }} {{ sizeClasses() }} w-full transition-colors h-full" [disabled]="disabled()" [type]="btnType()">
   <ng-content></ng-content>
 </button>

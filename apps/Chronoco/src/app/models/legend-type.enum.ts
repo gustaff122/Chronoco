@@ -1,4 +1,4 @@
-export enum EventBlockType {
+export enum LegendType {
   LECTURE = 'LECTURE',
   TECHNICAL = 'TECHNICAL',
   PANEL = 'PANEL',

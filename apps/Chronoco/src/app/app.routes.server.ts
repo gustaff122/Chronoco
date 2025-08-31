@@ -3,11 +3,11 @@ import { RoutesEnum } from '@chronoco-fe/models/routes.enum';
 
 export const serverRoutes: ServerRoute[] = [
   {
-    path: RoutesEnum.PLANNER,
-    renderMode: RenderMode.Client,
+    path: RoutesEnum.AUTH,
+    renderMode: RenderMode.Prerender,
   },
   {
     path: '**',
-    renderMode: RenderMode.Prerender,
+    renderMode: RenderMode.Client,
   },
 ];

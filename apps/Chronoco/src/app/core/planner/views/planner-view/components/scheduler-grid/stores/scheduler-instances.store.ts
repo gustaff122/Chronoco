@@ -1,29 +1,29 @@
 import { inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
-import { IEventBlockPosition, IRenderableBlock } from '@chronoco-fe/models/i-event-block';
+import { IInstance, IInstancePosition } from '@chronoco-fe/models/i-legend';
 import { SchedulerGridComponentStore } from '../scheduler-grid.component.store';
 import { ulid } from 'ulid';
 
 @Injectable()
-export class SchedulerEventInstancesStore {
+export class SchedulerInstancesStore {
   private readonly gridStore: SchedulerGridComponentStore = inject(SchedulerGridComponentStore);
 
-  private readonly _eventInstances: WritableSignal<IRenderableBlock[]> = signal([]);
+  private readonly _instances: WritableSignal<IInstance[]> = signal([]);
 
-  public readonly eventInstances: Signal<IRenderableBlock[]> = this._eventInstances.asReadonly();
+  public readonly instances: Signal<IInstance[]> = this._instances.asReadonly();
 
-  public create(instance: Omit<IRenderableBlock, 'id' | 'zIndex'>): IRenderableBlock {
-    const newInstance: IRenderableBlock = {
+  public create(instance: Omit<IInstance, 'id' | 'zIndex'>): IInstance {
+    const newInstance: IInstance = {
       ...instance,
       id: `instance-${ulid()}`,
-      zIndex: this.eventInstances().length + 1,
+      zIndex: this.instances().length + 1,
     };
 
-    this._eventInstances.update(instances => [ ...instances, newInstance ]);
+    this._instances.update(instances => [ ...instances, newInstance ]);
     return newInstance;
   }
 
-  public update(instanceId: string, position: Partial<IEventBlockPosition>): void {
-    this._eventInstances.update(instances => {
+  public update(instanceId: string, position: Partial<IInstancePosition>): void {
+    this._instances.update(instances => {
       return instances.map(instance => {
         if (instance.id !== instanceId) return instance;
         const updatedPosition = { ...instance.position, ...position };
@@ -34,14 +34,14 @@ export class SchedulerEventInstancesStore {
   }
 
   public delete(instanceId: string): void {
-    this._eventInstances.update(state => (state.filter(instance => instance.id !== instanceId)));
+    this._instances.update(state => (state.filter(instance => instance.id !== instanceId)));
   }
 
   public findAtPosition(
     x: number,
     y: number,
-  ): IRenderableBlock[] {
-    return this._eventInstances().filter(instance => {
+  ): IInstance[] {
+    return this._instances().filter(instance => {
       const style = this.getPositionStyle(instance.position);
       return (
         x >= style.left &&
@@ -53,7 +53,7 @@ export class SchedulerEventInstancesStore {
   }
 
   public getPositionStyle(
-    position: IEventBlockPosition,
+    position: IInstancePosition,
   ) {
     const gridSizeX = this.gridStore.gridSizeX();
     const gridSizeY = this.gridStore.gridSizeY();
@@ -71,7 +71,7 @@ export class SchedulerEventInstancesStore {
   }
 
   public updateZIndexes(instanceId: string): void {
-    this._eventInstances.update((instances) => {
+    this._instances.update((instances) => {
       const others = instances
         .filter(b => b.id !== instanceId)
         .sort((a, b) => a.zIndex - b.zIndex);
@@ -79,7 +79,7 @@ export class SchedulerEventInstancesStore {
       const zIndexMap = new Map<string, number>(
         others.map((b, i) => [ b.id, i + 1 ]),
       );
-      
+
       zIndexMap.set(instanceId, instances.length);
 
       return instances.map(b => ({

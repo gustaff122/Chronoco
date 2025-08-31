@@ -1,0 +1,17 @@
+<lib-modal [caption]="'Czy na pewno chcesz usunąć wydarzenie' + ' ' + event?.name + '?'">
+  <app-input
+    [placeholder]="event?.name"
+    label="Przepisz nazwę wydarzenia, by móc je usunąć"
+    [(ngModel)]="typedName"
+  />
+
+  <div class="flex justify-end gap-x-4">
+    <app-button (click)="closeModal()" btnType="button" severity="outline">
+      Nie, anuluj
+    </app-button>
+
+    <app-button [disabled]="typedName !== event?.name" (click)="deleteEvent()" btnType="button" severity="danger">
+      Tak, usuń
+    </app-button>
+  </div>
+</lib-modal>

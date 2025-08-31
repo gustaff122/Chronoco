@@ -1,0 +1,22 @@
+<div>
+  <h4 class="font-semibold text-gray-600">
+    {{ caption() }}
+  </h4>
+
+  <div class="grid mt-4 gap-4 grid-cols-5">
+    @if (items().length > 0) {
+      @for (item of items(); track item) {
+        <div class="relative group">
+          <div class="absolute top-0 right-0 opacity-0 group-hover:opacity-100 translate-x-1/2 -translate-y-1/2 z-10">
+            <app-events-list-item-pin-btn/>
+          </div>
+          <app-events-list-item [item]="item"/>
+        </div>
+      }
+    } @else {
+      <p class="text-sm text-gray-500 tracking-wider">
+        Brak wydarzeń
+      </p>
+    }
+  </div>
+</div>

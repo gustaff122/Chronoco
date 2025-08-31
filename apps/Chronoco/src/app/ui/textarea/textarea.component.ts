@@ -1,9 +1,11 @@
-import { Component, input, InputSignal, Optional, Self } from '@angular/core';
+import { Component, input, InputSignal, Optional, Self, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, FormsModule, NgControl, ReactiveFormsModule } from '@angular/forms';
 import { provideIcons } from '@ng-icons/core';
 import { heroMagnifyingGlass } from '@ng-icons/heroicons/outline';
 import { ulid } from 'ulid';
+
+type TextareaTheme = 'dark' | 'light';
 
 @Component({
   selector: 'app-textarea',
@@ -17,7 +19,11 @@ import { ulid } from 'ulid';
 export class TextareaComponent implements ControlValueAccessor {
   public placeholder: InputSignal<string> = input(null);
   public label: InputSignal<string> = input(null);
+  public rows: InputSignal<string | number> = input();
   public inputId: InputSignal<string> = input(ulid());
+  public theme: InputSignal<TextareaTheme> = input('dark' as TextareaTheme);
+
+  public isDisabled: WritableSignal<boolean> = signal(false);
 
   public value: string = null;
 
@@ -51,4 +57,8 @@ export class TextareaComponent implements ControlValueAccessor {
 
   public onTouch: any = (): void => {
   };
+
+  public setDisabledState(isDisabled: boolean): void {
+    this.isDisabled.set(isDisabled);
+  }
 }

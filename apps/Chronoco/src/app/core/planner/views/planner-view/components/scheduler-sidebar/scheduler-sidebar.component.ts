@@ -3,7 +3,7 @@ import { SchedulerSidebarBlocksListComponent } from './components/scheduler-side
 import { Dialog } from '@angular/cdk/dialog';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { EventBlockType } from '@chronoco-fe/models/event-block-type.enum';
+import { LegendType } from '@chronoco-fe/models/legend-type.enum';
 import { SchedulerLegendStore } from '../scheduler-grid/stores/scheduler-legend.store';
 import { ButtonComponent } from '@chronoco-fe/ui/button/button.component';
 import { InputComponent } from '@chronoco-fe/ui/input/input.component';
@@ -38,7 +38,7 @@ export class SchedulerSidebarComponent implements OnInit {
   private readonly formBuilder: FormBuilder = inject(FormBuilder);
   private readonly destroyRef: DestroyRef = inject(DestroyRef);
   private readonly searchScrollStore: SchedulerSearchScrollStore = inject(SchedulerSearchScrollStore);
-  protected readonly EventBlockType: typeof EventBlockType = EventBlockType;
+  protected readonly EventBlockType: typeof LegendType = LegendType;
 
   public readonly foundInstancesCount: Signal<number> = this.searchScrollStore.foundInstancesCount;
   public readonly currentFoundInstanceNumber: Signal<number> = this.searchScrollStore.currentFoundInstanceNumber;
@@ -50,7 +50,7 @@ export class SchedulerSidebarComponent implements OnInit {
     this.buildForm();
     this.initFormListener();
 
-    this.legendStore.createLegendDefinition('Scheduler', EventBlockType.LECTURE, null);
+    this.legendStore.createLegendDefinition('Scheduler', LegendType.LECTURE, null);
   }
 
   public scrollToNextInstanceHandler(): void {

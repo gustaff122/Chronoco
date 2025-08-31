@@ -3,7 +3,7 @@ import { SchedulerHeaderComponent } from './components/scheduler-header/schedule
 import { SchedulerGridComponent } from './components/scheduler-grid/scheduler-grid.component';
 import { SchedulerSidebarComponent } from './components/scheduler-sidebar/scheduler-sidebar.component';
 import { IRoom } from '@chronoco-fe/models/i-room';
-import { SchedulerEventInstancesStore } from './components/scheduler-grid/stores/scheduler-event-instances.store';
+import { SchedulerInstancesStore } from './components/scheduler-grid/stores/scheduler-instances.store';
 import { SchedulerLegendStore } from './components/scheduler-grid/stores/scheduler-legend.store';
 import { SchedulerGridComponentStore } from './components/scheduler-grid/scheduler-grid.component.store';
 import { SchedulerGridScrollStore } from './components/scheduler-grid/stores/scheduler-grid-scroll.store';
@@ -25,7 +25,7 @@ import { SchedulerSearchScrollStore } from './components/scheduler-grid/stores/s
   providers: [
     SchedulerGridComponentStore,
     SchedulerLegendStore,
-    SchedulerEventInstancesStore,
+    SchedulerInstancesStore,
     SchedulerGridScrollStore,
     SchedulerGridInteractionsStore,
     SchedulerGridDayScrollingStore,

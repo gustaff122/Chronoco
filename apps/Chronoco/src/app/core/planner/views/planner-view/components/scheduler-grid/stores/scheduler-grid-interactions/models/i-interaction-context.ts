@@ -1,12 +1,12 @@
-import { IEventBlockPosition } from '@chronoco-fe/models/i-event-block';
-import { SchedulerEventInstancesStore } from '../../scheduler-event-instances.store';
+import { IInstancePosition } from '@chronoco-fe/models/i-legend';
+import { SchedulerInstancesStore } from '../../scheduler-instances.store';
 import { SchedulerGridComponentStore } from '../../../scheduler-grid.component.store';
 
 export interface IInteractionContext {
   activeInstanceId: string;
-  originalPosition: IEventBlockPosition;
+  originalPosition: IInstancePosition;
 
-  eventInstancesStore: SchedulerEventInstancesStore;
+  instancesStore: SchedulerInstancesStore;
   gridStore: SchedulerGridComponentStore;
 
   dateTimeToIndex(date: Date): number;

@@ -1,6 +1,6 @@
 import { ElementRef, inject, Injectable, Signal } from '@angular/core';
-import { IEventBlockPosition, IOperationalBlock, IRenderableBlock } from '@chronoco-fe/models/i-event-block';
-import { SchedulerEventInstancesStore } from '../scheduler-event-instances.store';
+import { IInstance, IInstancePosition, IOperationalInstance } from '@chronoco-fe/models/i-legend';
+import { SchedulerInstancesStore } from '../scheduler-instances.store';
 import { SchedulerGridComponentStore } from '../../scheduler-grid.component.store';
 import { SchedulerGridScrollStore } from '../scheduler-grid-scroll.store';
 import { SchedulerLegendStore } from '../scheduler-legend.store';
@@ -13,7 +13,7 @@ import { SchedulerGridListenersStore } from '../scheduler-grid-listeners.store';
 export class SchedulerGridInteractionsStore implements IInteractionContext {
   public interactionContainer: Signal<ElementRef>;
 
-  public readonly eventInstancesStore: SchedulerEventInstancesStore = inject(SchedulerEventInstancesStore);
+  public readonly instancesStore: SchedulerInstancesStore = inject(SchedulerInstancesStore);
   public readonly gridStore: SchedulerGridComponentStore = inject(SchedulerGridComponentStore);
   private readonly gridScrollStore: SchedulerGridScrollStore = inject(SchedulerGridScrollStore);
   private readonly listenersStore: SchedulerGridListenersStore = inject(SchedulerGridListenersStore);
@@ -24,7 +24,7 @@ export class SchedulerGridInteractionsStore implements IInteractionContext {
   public activeInstanceId: string = null;
   private readonly edgeThreshold = 5;
 
-  public originalPosition: IEventBlockPosition = null;
+  public originalPosition: IInstancePosition = null;
 
   private startMouseX = 0;
   private startMouseY = 0;
@@ -41,7 +41,7 @@ export class SchedulerGridInteractionsStore implements IInteractionContext {
     };
   }
 
-  public onBlockMouseMove(event: MouseEvent, block: IOperationalBlock): void {
+  public onBlockMouseMove(event: MouseEvent, block: IOperationalInstance): void {
     if (this.mode !== InteractionMode.NONE) return;
 
     (event.target as HTMLElement).style.cursor = this.getCursorType(event, block);
@@ -80,7 +80,7 @@ export class SchedulerGridInteractionsStore implements IInteractionContext {
     container.nativeElement.style.cursor = cursor;
   }
 
-  public getCursorType(event: MouseEvent, block: IOperationalBlock): string {
+  public getCursorType(event: MouseEvent, block: IOperationalInstance): string {
     if ((event.target as HTMLElement).closest('.scheduler-block-remove')) {
       return 'pointer';
     }
@@ -88,7 +88,7 @@ export class SchedulerGridInteractionsStore implements IInteractionContext {
     const mousePos = this.getMousePosition(event);
     if (!mousePos) return 'default';
 
-    const style = this.eventInstancesStore.getPositionStyle(block.instance.position);
+    const style = this.instancesStore.getPositionStyle(block.instance.position);
 
     const distanceFromTop = mousePos.y - style.top;
     const distanceFromBottom = style.top + style.height - mousePos.y;
@@ -146,14 +146,14 @@ export class SchedulerGridInteractionsStore implements IInteractionContext {
     this.gridScrollStore.stopAutoScroll();
   }
 
-  private startInstanceInteraction(instance: IRenderableBlock, mousePos: { x: number, y: number }, event: MouseEvent): void {
+  private startInstanceInteraction(instance: IInstance, mousePos: { x: number, y: number }, event: MouseEvent): void {
     this.activeInstanceId = instance.id;
     this.originalPosition = { ...instance.position };
     this.startMouseX = mousePos.x;
     this.startMouseY = mousePos.y;
 
-    const style = this.eventInstancesStore.getPositionStyle(instance.position);
-    this.eventInstancesStore.updateZIndexes(instance.id);
+    const style = this.instancesStore.getPositionStyle(instance.position);
+    this.instancesStore.updateZIndexes(instance.id);
 
     const distanceFromTop = mousePos.y - style.top;
     const distanceFromBottom = style.top + style.height - mousePos.y;
@@ -196,16 +196,16 @@ export class SchedulerGridInteractionsStore implements IInteractionContext {
     const startDate = this.indexToDateTime(rowIndex);
     const endDate = this.indexToDateTime(rowIndex + 1);
 
-    const newPosition: Omit<IRenderableBlock, 'id' | 'zIndex'> = {
+    const newPosition: Omit<IInstance, 'id' | 'zIndex'> = {
       position: {
         rooms: [ rooms[colIndex].name ],
         startTime: startDate,
         endTime: endDate,
       },
-      legend: selectedLegend,
+      legendId: selectedLegend.id,
     };
 
-    const newInstance = this.eventInstancesStore.create(newPosition);
+    const newInstance = this.instancesStore.create(newPosition);
     if (!newInstance) {
       return;
     }
@@ -228,7 +228,7 @@ export class SchedulerGridInteractionsStore implements IInteractionContext {
 
     if (!mousePos || isOnRemoveBtn) return;
 
-    const clickedInstances = this.eventInstancesStore.findAtPosition(
+    const clickedInstances = this.instancesStore.findAtPosition(
       mousePos.x,
       mousePos.y,
     );

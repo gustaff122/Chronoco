@@ -1,0 +1,83 @@
+@let caption = isEditing() ? `Zaktualizuj wydarzenie` : 'Dodaj nowe wydarzenie';
+
+<app-page-container [caption]="caption + ' ' + editedEvent()?.name"
+                    [previousPage]="['/', RoutesEnum.EVENTS]"
+>
+  <ng-container actions [ngTemplateOutlet]="actionTpl"/>
+
+  <form [formGroup]="form" class="grid grid-cols-2 max-w-xl gap-4">
+    <app-input theme="light"
+               label="Nazwa"
+               placeholder="Chronocon"
+               class="col-span-2"
+               formControlName="name"
+    />
+
+    <app-input theme="light"
+               label="Podtytuł"
+               placeholder="I Edycja - 2030"
+               class="col-span-2"
+               formControlName="subtitle"
+    />
+
+    <app-input theme="light"
+               label="Data rozpoczęcia"
+               inputType="datetime-local"
+               formControlName="dateFrom"
+    />
+
+    <app-input theme="light"
+               label="Data zakończenia"
+               inputType="datetime-local"
+               formControlName="dateTo"
+    />
+
+    <app-input theme="light"
+               label="Adres wydarzenia"
+               placeholder="Sky Island 94"
+               class="col-span-2"
+               formControlName="address"
+    />
+
+    <app-input theme="light"
+               label="Maksymalna liczba uczestników"
+               placeholder="2137"
+               inputType="number"
+               formControlName="maxCapacity"
+    />
+
+    <app-input theme="light"
+               label="Cena biletów"
+               placeholder="~ 60 – 150 zł"
+               formControlName="approximatePrice"
+    />
+
+    <app-textarea theme="light"
+                  label="Opis wydarzenia"
+                  placeholder="Chronocon to dni pełne emocji, wypełnione masą atrakcji. Każdy miłośnik fantastyki, książek, gier komputerowych, seriali oraz anime poczuje się jak w raju!"
+                  rows="6"
+                  class="col-span-2"
+                  formControlName="description"
+    />
+
+    <div class="col-span-2 flex justify-end">
+      <app-event-add-edit-btn
+        [eventFormData]="form.getRawValue()"
+        [disabled]="form.invalid"
+        [caption]="caption"/>
+    </div>
+  </form>
+</app-page-container>
+
+<ng-template #actionTpl>
+  <div class="flex items-center gap-x-3">
+
+  </div>
+  @if (loading()) {
+    <ng-icon class="text-3xl text-blue-700 animate-spin" name="heroArrowPath"/>
+  }
+
+  <app-button severity="danger" btnType="button" (click)="openDeletingModal()">
+    Usuń wydarzenie
+  </app-button>
+</ng-template>

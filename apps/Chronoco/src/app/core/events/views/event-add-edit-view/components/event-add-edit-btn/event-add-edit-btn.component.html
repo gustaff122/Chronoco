@@ -1,0 +1,10 @@
+<app-button (click)="submitHandler()"
+            [class.animate-pulse]="loading()"
+            size="lg"
+            btnType="button"
+            [disabled]="disabled()"
+>
+  <div class="flex items-center justify-center gap-x-2">
+    <span>{{ caption() }}</span>
+  </div>
+</app-button>

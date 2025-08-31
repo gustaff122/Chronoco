@@ -13,6 +13,9 @@ module.exports = {
         '2xl': '2147483647',
         'xl': '2147483646',
       },
+      height: {
+        'page': 'calc(100vh - 24px - 84px - 8px)',
+      },
     },
   },
   plugins: [],

@@ -1,25 +1,29 @@
-import { Component, inject, input, InputSignal, Signal } from '@angular/core';
-import { IRenderableBlock } from '@chronoco-fe/models/i-event-block';
+import { Component, computed, inject, input, InputSignal, Signal } from '@angular/core';
+import { IInstance, ILegend } from '@chronoco-fe/models/i-legend';
 import { DatePipe } from '@angular/common';
-import { SchedulerBlockTypeColorPipe } from '@chronoco-fe/pipes/scheduler-block-type-color.pipe';
 import { SchedulerSearchScrollStore } from '../../../../stores/scheduler-search-scroll.store';
 import { DurationInMinutesPipe } from '@chronoco-fe/pipes/scheduler-duration-in-minutes.pipe';
+import { SchedulerLegendStore } from '../../../../stores/scheduler-legend.store';
+import { SchedulerBlockTypeColorPipe } from '@chronoco-fe/pipes/scheduler-block-type-color.pipe';
 
 @Component({
   selector: 'app-scheduler-grid-single-block',
   imports: [
     DatePipe,
-    SchedulerBlockTypeColorPipe,
     DurationInMinutesPipe,
+    SchedulerBlockTypeColorPipe,
   ],
   templateUrl: './scheduler-grid-single-block.component.html',
   styleUrl: './scheduler-grid-single-block.component.css',
 })
 export class SchedulerGridSingleBlockComponent {
-  public block: InputSignal<IRenderableBlock> = input.required();
+  public block: InputSignal<IInstance> = input.required();
 
   private readonly searchScrollStore: SchedulerSearchScrollStore = inject(SchedulerSearchScrollStore);
+  private readonly legendStore: SchedulerLegendStore = inject(SchedulerLegendStore);
 
-  public readonly currentFoundInstance: Signal<IRenderableBlock> = this.searchScrollStore.currentFoundInstance;
+  public readonly legend: Signal<ILegend> = computed(() => this.legendStore.legendBlocks().find(({ id }) => id === this.block().legendId) || null);
+  public readonly currentFoundInstance: Signal<IInstance> = this.searchScrollStore.currentFoundInstance;
 
+  protected readonly Math = Math;
 }

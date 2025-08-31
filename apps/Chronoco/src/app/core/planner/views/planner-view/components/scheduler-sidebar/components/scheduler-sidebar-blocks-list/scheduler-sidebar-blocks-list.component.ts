@@ -3,8 +3,8 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroChevronDown, heroChevronUp, heroPencilSquare } from '@ng-icons/heroicons/outline';
 import { SchedulerBlockTypeColorIntensePipe } from '@chronoco-fe/pipes/scheduler-block-type-color.pipe';
 import { SchedulerTranslateBlockTypePipe } from '@chronoco-fe/pipes/scheduler-translate-block-type.pipe';
-import { EventBlockType } from '@chronoco-fe/models/event-block-type.enum';
-import { IEventBlock } from '@chronoco-fe/models/i-event-block';
+import { LegendType } from '@chronoco-fe/models/legend-type.enum';
+import { ILegend } from '@chronoco-fe/models/i-legend';
 import { SchedulerLegendStore } from '../../../scheduler-grid/stores/scheduler-legend.store';
 import { Dialog } from '@angular/cdk/dialog';
 
@@ -22,14 +22,14 @@ import { Dialog } from '@angular/cdk/dialog';
   ],
 })
 export class SchedulerSidebarBlocksListComponent {
-  public blocksType: InputSignal<EventBlockType> = input.required();
+  public blocksType: InputSignal<LegendType> = input.required();
 
   private readonly legendStore: SchedulerLegendStore = inject(SchedulerLegendStore);
   private readonly dialog: Dialog = inject(Dialog);
 
-  public readonly legends: Signal<IEventBlock[]> = computed(() => this.legendStore.filteredLegends().filter(({ type }) => type === this.blocksType()));
+  public readonly legends: Signal<ILegend[]> = computed(() => this.legendStore.filteredLegends().filter(({ type }) => type === this.blocksType()));
 
-  public readonly selectedLegendBlock: Signal<IEventBlock> = this.legendStore.selectedLegendBlock;
+  public readonly selectedLegendBlock: Signal<ILegend> = this.legendStore.selectedLegendBlock;
 
   public readonly isRolledUp: WritableSignal<boolean> = signal(false);
 
@@ -41,7 +41,7 @@ export class SchedulerSidebarBlocksListComponent {
     this.legendStore.selectLegendForDrawing(id);
   }
 
-  public openEditLegendModalHandler(data: IEventBlock): void {
+  public openEditLegendModalHandler(data: ILegend): void {
     import('@chronoco-fe/modals/scheduler-add-edit-block-modal/scheduler-add-edit-block-modal.component').then(({ SchedulerAddEditBlockModalComponent }) => {
       this.dialog.open(SchedulerAddEditBlockModalComponent, {
         data,

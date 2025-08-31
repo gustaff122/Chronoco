@@ -1,0 +1,21 @@
+<div>
+  <header class="flex items-center rounded-t justify-between bg-white h-[90px] px-6 border-b-2 border-gray-200">
+    <div class="flex items-center gap-x-4">
+      @if (previousPage()) {
+        <a [routerLink]="previousPage()">
+          <ng-icon class="text-2xl mt-0.5 text-blue-700" name="heroArrowUturnLeft"/>
+        </a>
+      }
+
+      <h3 class="text-2xl">
+        {{ caption() }}
+      </h3>
+    </div>
+
+    <ng-content select="[actions]"/>
+  </header>
+
+  <div class="pt-6 px-6 pb-4 bg-gray-50 rounded-b h-page overflow-y-auto">
+    <ng-content/>
+  </div>
+</div>

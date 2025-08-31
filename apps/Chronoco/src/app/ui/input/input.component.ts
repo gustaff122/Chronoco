@@ -1,11 +1,12 @@
-import { Component, input, InputSignal, Optional, Self } from '@angular/core';
+import { Component, input, InputSignal, OnInit, Optional, Self, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ControlValueAccessor, FormsModule, NgControl, ReactiveFormsModule } from '@angular/forms';
+import { ControlValueAccessor, FormsModule, NgControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroMagnifyingGlass } from '@ng-icons/heroicons/outline';
 import { ulid } from 'ulid';
 
-type InputType = 'password' | 'number' | 'text' | 'search';
+type InputType = 'password' | 'number' | 'text' | 'search' | 'time' | 'datetime-local';
+type InputTheme = 'dark' | 'light';
 
 @Component({
   selector: 'app-input',
@@ -16,12 +17,17 @@ type InputType = 'password' | 'number' | 'text' | 'search';
     provideIcons({ heroMagnifyingGlass }),
   ],
 })
-export class InputComponent implements ControlValueAccessor {
+export class InputComponent implements ControlValueAccessor, OnInit {
   public inputType: InputSignal<InputType> = input('text' as InputType);
+  public theme: InputSignal<InputTheme> = input('dark' as InputTheme);
   public placeholder: InputSignal<string> = input(null);
   public label: InputSignal<string> = input(null);
   public inputId: InputSignal<string> = input(ulid());
   public search: InputSignal<boolean> = input(false);
+
+  public isDisabled: WritableSignal<boolean> = signal(false);
+
+  public readonly isRequired: WritableSignal<boolean> = signal(false);
 
   public value: string = null;
 
@@ -31,6 +37,10 @@ export class InputComponent implements ControlValueAccessor {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
+  }
+
+  public ngOnInit(): void {
+    this.isRequired.set(this.ngControl?.control?.hasValidator?.(Validators.required) ?? false);
   }
 
   public updateChanges(): void {
@@ -55,4 +65,8 @@ export class InputComponent implements ControlValueAccessor {
 
   public onTouch: any = (): void => {
   };
+
+  public setDisabledState(isDisabled: boolean): void {
+    this.isDisabled.set(isDisabled);
+  }
 }

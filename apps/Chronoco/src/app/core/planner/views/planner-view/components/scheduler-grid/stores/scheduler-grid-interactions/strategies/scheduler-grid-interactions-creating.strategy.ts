@@ -35,6 +35,6 @@ export class SchedulerGridInteractionsCreatingStrategy implements IInteractionSt
       endTime: ctx.indexToDateTime(endRow),
     };
 
-    ctx.eventInstancesStore.update(ctx.activeInstanceId, newPosition);
+    ctx.instancesStore.update(ctx.activeInstanceId, newPosition);
   }
 }

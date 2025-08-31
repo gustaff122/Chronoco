@@ -3,13 +3,17 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 import { Users } from './entities/users.entity';
+import { Events } from './entities/events.entity';
+import { EventsModule } from './modules/events/events.module';
 
 const ENTITIES = [
   Users,
+  Events,
 ];
 
 const MODULES = [
   AuthModule,
+  EventsModule,
 ];
 
 @Module({

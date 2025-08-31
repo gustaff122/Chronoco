@@ -13,8 +13,12 @@ export const appRoutes: Route[] = [
         canActivate: [ isLoggedIn ],
         children: [
           {
-            path: '',
+            path: RoutesEnum.HOME,
             loadChildren: () => import('@chronoco-fe/core/home/home.routes'),
+          },
+          {
+            path: RoutesEnum.EVENTS,
+            loadChildren: () => import('@chronoco-fe/core/events/events.routes'),
           },
           {
             path: RoutesEnum.PLANNER,

@@ -19,13 +19,13 @@ export class SchedulerGridInteractionsResizingTopStrategy implements IInteractio
         endTime: ctx.indexToDateTime(Math.min(totalRows, newStartRow + 1)),
       };
 
-      ctx.eventInstancesStore.update(ctx.activeInstanceId, newPosition);
+      ctx.instancesStore.update(ctx.activeInstanceId, newPosition);
     } else {
       const newPosition = {
         startTime: ctx.indexToDateTime(newStartRow),
       };
 
-      ctx.eventInstancesStore.update(ctx.activeInstanceId, newPosition);
+      ctx.instancesStore.update(ctx.activeInstanceId, newPosition);
     }
   }
 }

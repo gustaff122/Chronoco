@@ -1,6 +1,6 @@
 import { Component, computed, inject, OnInit, Signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { EventBlockType } from '../../models/event-block-type.enum';
+import { LegendType } from '@chronoco-fe/models/legend-type.enum';
 import { SchedulerTranslateBlockTypePipe } from '../../pipes/scheduler-translate-block-type.pipe';
 import { ModalComponent } from '../../ui/modal/modal.component';
 import { SchedulerLegendStore } from '@chronoco-fe/core/planner/views/planner-view/components/scheduler-grid/stores/scheduler-legend.store';
@@ -10,11 +10,11 @@ import { ISelectOption } from '@chronoco-fe/models/i-select-option';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { InputComponent } from '@chronoco-fe/ui/input/input.component';
 import { TextareaComponent } from '@chronoco-fe/ui/textarea/textarea.component';
-import { IEventBlock } from '@chronoco-fe/models/i-event-block';
+import { ILegend } from '@chronoco-fe/models/i-legend';
 
 interface IAddLegendForm {
   name: FormControl<string>;
-  blocksType: FormControl<EventBlockType>;
+  blocksType: FormControl<LegendType>;
   description: FormControl<string>;
 }
 
@@ -35,15 +35,15 @@ interface IAddLegendForm {
   ],
 })
 export class SchedulerAddEditBlockModalComponent implements OnInit {
-  public editedLegend: IEventBlock = inject(DIALOG_DATA);
+  public editedLegend: ILegend = inject(DIALOG_DATA);
 
   private readonly legendStore: SchedulerLegendStore = inject(SchedulerLegendStore);
   private readonly formBuilder: FormBuilder = inject(FormBuilder);
   private readonly dialogRef: DialogRef = inject(DialogRef);
   private readonly schedulerTranslateBlockTypePipe: SchedulerTranslateBlockTypePipe = inject(SchedulerTranslateBlockTypePipe);
 
-  public readonly blockTypes: Signal<EventBlockType[]> = computed(() => Object.values(EventBlockType));
-  public readonly blockTypesOptions: Signal<ISelectOption[]> = computed(() => Object.values(EventBlockType).map((el) => ({ display: this.schedulerTranslateBlockTypePipe.transform(el), value: el })));
+  public readonly blockTypes: Signal<LegendType[]> = computed(() => Object.values(LegendType));
+  public readonly blockTypesOptions: Signal<ISelectOption[]> = computed(() => Object.values(LegendType).map((el) => ({ display: this.schedulerTranslateBlockTypePipe.transform(el), value: el })));
 
   public form: FormGroup<IAddLegendForm>;
 

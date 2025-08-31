@@ -1,19 +1,20 @@
 import { computed, inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
-import { IEventBlock } from '@chronoco-fe/models/i-event-block';
-import { EventBlockType } from '@chronoco-fe/models/event-block-type.enum';
+import { ILegend } from '@chronoco-fe/models/i-legend';
+import { LegendType } from '@chronoco-fe/models/legend-type.enum';
 import { ulid } from 'ulid';
 import { SchedulerSearchStore } from './scheduler-search.store';
 
 @Injectable()
 export class SchedulerLegendStore {
-  private readonly _legendBlocks = signal<IEventBlock[]>([]);
+  private readonly _legendBlocks: WritableSignal<ILegend[]> = signal([]);
+  public readonly legendBlocks: Signal<ILegend[]> = this._legendBlocks.asReadonly();
 
-  private readonly _selectedLegendBlock: WritableSignal<IEventBlock | null> = signal(null);
+  private readonly _selectedLegendBlock: WritableSignal<ILegend> = signal(null);
   public readonly selectedLegendBlock = this._selectedLegendBlock.asReadonly();
 
   private readonly searchStore: SchedulerSearchStore = inject(SchedulerSearchStore);
 
-  public readonly filteredLegends: Signal<IEventBlock[]> = computed(() => {
+  public readonly filteredLegends: Signal<ILegend[]> = computed(() => {
     const filter = this.searchStore.searchFilter();
     const blocks = this._legendBlocks();
 
@@ -24,8 +25,8 @@ export class SchedulerLegendStore {
   });
 
 
-  public createLegendDefinition(name: string, type: EventBlockType, description: string): void {
-    const newLegend: IEventBlock = {
+  public createLegendDefinition(name: string, type: LegendType, description: string): void {
+    const newLegend: ILegend = {
       id: ulid(),
       type,
       positions: [],
@@ -36,7 +37,7 @@ export class SchedulerLegendStore {
     this._legendBlocks.update(state => ([ ...state, newLegend ]));
   }
 
-  public updateLegendDefinition(legendId: string, updates: Partial<Omit<IEventBlock, 'id'>>): void {
+  public updateLegendDefinition(legendId: string, updates: Partial<Omit<ILegend, 'id'>>): void {
     this._legendBlocks.update(state => state.map(el => el.id === legendId ? { ...el, ...updates } : el));
 
     console.log(this._legendBlocks());

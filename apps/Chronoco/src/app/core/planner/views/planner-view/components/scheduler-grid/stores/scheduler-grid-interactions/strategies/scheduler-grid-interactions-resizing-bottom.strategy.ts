@@ -19,13 +19,13 @@ export class SchedulerGridInteractionsResizingBottomStrategy implements IInterac
         endTime: ctx.originalPosition.startTime,
       };
 
-      ctx.eventInstancesStore.update(ctx.activeInstanceId, newPosition);
+      ctx.instancesStore.update(ctx.activeInstanceId, newPosition);
     } else {
       const newPosition = {
         endTime: ctx.indexToDateTime(newEndRow),
       };
 
-      ctx.eventInstancesStore.update(ctx.activeInstanceId, newPosition);
+      ctx.instancesStore.update(ctx.activeInstanceId, newPosition);
     }
   }
 }

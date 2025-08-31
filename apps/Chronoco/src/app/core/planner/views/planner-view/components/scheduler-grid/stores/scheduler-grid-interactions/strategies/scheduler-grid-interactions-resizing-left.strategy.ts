@@ -17,6 +17,6 @@ export class SchedulerGridInteractionsResizingLeftStrategy implements IInteracti
     newLeftIdx = Math.min(rightmostIdx, newLeftIdx);
 
     const selectedRooms = rooms.slice(newLeftIdx, rightmostIdx + 1).map(r => r.name);
-    ctx.eventInstancesStore.update(ctx.activeInstanceId, { rooms: selectedRooms });
+    ctx.instancesStore.update(ctx.activeInstanceId, { rooms: selectedRooms });
   }
 }
