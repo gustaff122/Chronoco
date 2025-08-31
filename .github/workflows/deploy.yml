@@ -36,6 +36,7 @@ jobs:
           host: ${{ secrets.MIKRUS_HOST }}
           username: ${{ secrets.MIKRUS_USER }}
           key: ${{ secrets.MIKRUS_SSH_KEY }}
+          port: ${{ secrets.MIKRUS_PORT }}
           source: "dist/*"
           target: "/home/deploy/apps"
       
