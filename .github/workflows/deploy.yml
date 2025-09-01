@@ -58,5 +58,5 @@ jobs:
           key: ${{ secrets.MIKRUS_SSH_KEY }}
           port: ${{ secrets.MIKRUS_PORT }}
           script: |
-            cd /home/deploy/apps/chronoco-github-actions/chronoco-api
+            cd /home/deploy/apps/chronoco-github-actions/dist/chronoco-api
             pm2 restart api || pm2 start main.js --name api
