@@ -18,9 +18,9 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install backend dependencies locally
+      - name: Install packages
         run: |
-          npm install --force --prefix apps/chronoco-api
+          npm install --force
 
       - name: Build backend (NestJS)
         run: |
@@ -40,7 +40,7 @@ jobs:
       #     source: "dist/apps/Chronoco"
       #     target: "/home/deploy/apps/chronoco-github-actions"
 
-      - name: Deploy backend to Mikrus
+      - name: Deploy API
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.MIKRUS_HOST }}
@@ -59,7 +59,7 @@ jobs:
           port: ${{ secrets.MIKRUS_PORT }}
           script: |
             cd /home/deploy/apps/chronoco-backend/dist/chronoco-api
-            echo "Installing dependencies..."
+            echo "Running npm install..."
             npm install --unsafe-perm
 
       - name: Restart PM2 on Mikrus
