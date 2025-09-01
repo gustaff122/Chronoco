@@ -72,4 +72,5 @@ jobs:
           script: |
             cd /home/deploy/apps/chronoco-backend/dist/chronoco-api
             echo "Restarting PM2 process..."
-            pm2 restart api || pm2 start main.js --name api
+            pm2 delete api
+            pm2 start main.js --name api
