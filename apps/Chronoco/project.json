@@ -47,7 +47,13 @@
               "maximumError": "8kb"
             }
           ],
-          "outputHashing": "all"
+          "outputHashing": "all",
+          "fileReplacements": [
+            {
+              "replace": "apps/Chronoco/src/environments/environment.ts",
+              "with": "apps/Chronoco/src/environments/environment.prod.ts"
+            }
+          ]
         },
         "development": {
           "optimization": false,
