@@ -18,29 +18,29 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install packages
+      - name: Install backend dependencies locally
         run: |
-          npm install --force
+          npm install --force --prefix apps/chronoco-api
 
       - name: Build backend (NestJS)
         run: |
           npx nx build chronoco-api
 
-     # - name: Build frontend (Angular)
-      #  run: |
-       #   npx nx build Chronoco
+      # - name: Build frontend (Angular)
+      #   run: |
+      #     npx nx build Chronoco
 
-#      - name: Deploy frontend
-#        uses: appleboy/scp-action@v0.1.7
-#        with:
- #         host: ${{ secrets.MIKRUS_HOST }}
-  #        username: ${{ secrets.MIKRUS_USER }}
-   #       key: ${{ secrets.MIKRUS_SSH_KEY }}
-    #      port: ${{ secrets.MIKRUS_PORT }}
-     #     source: "dist/apps/Chronoco"
-      #    target: "/home/deploy/apps/chronoco-github-actions"
-      
-      - name: Deploy API
+      # - name: Deploy frontend
+      #   uses: appleboy/scp-action@v0.1.7
+      #   with:
+      #     host: ${{ secrets.MIKRUS_HOST }}
+      #     username: ${{ secrets.MIKRUS_USER }}
+      #     key: ${{ secrets.MIKRUS_SSH_KEY }}
+      #     port: ${{ secrets.MIKRUS_PORT }}
+      #     source: "dist/apps/Chronoco"
+      #     target: "/home/deploy/apps/chronoco-github-actions"
+
+      - name: Deploy backend to Mikrus
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.MIKRUS_HOST }}
@@ -49,7 +49,19 @@ jobs:
           port: ${{ secrets.MIKRUS_PORT }}
           source: "dist/chronoco-api/*"
           target: "/home/deploy/apps/chronoco-backend"
-      
+
+      - name: Install backend dependencies on Mikrus
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.MIKRUS_HOST }}
+          username: ${{ secrets.MIKRUS_USER }}
+          key: ${{ secrets.MIKRUS_SSH_KEY }}
+          port: ${{ secrets.MIKRUS_PORT }}
+          script: |
+            cd /home/deploy/apps/chronoco-backend/dist/chronoco-api
+            echo "Installing dependencies..."
+            npm install --unsafe-perm
+
       - name: Restart PM2 on Mikrus
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -59,5 +71,5 @@ jobs:
           port: ${{ secrets.MIKRUS_PORT }}
           script: |
             cd /home/deploy/apps/chronoco-backend/dist/chronoco-api
-            npm install
+            echo "Restarting PM2 process..."
             pm2 restart api || pm2 start main.js --name api
