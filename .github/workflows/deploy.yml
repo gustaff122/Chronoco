@@ -60,7 +60,7 @@ jobs:
           script: |
             cd /home/deploy/apps/chronoco-backend/dist/chronoco-api
             echo "Running npm install..."
-            npm install --unsafe-perm
+            npm install --force
 
       - name: Restart PM2 on Mikrus
         uses: appleboy/ssh-action@v1.0.0
