@@ -30,14 +30,24 @@ jobs:
         run: |
           npx nx build Chronoco
 
-      - name: Deploy to Mikrus
+      - name: Deploy frontend
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.MIKRUS_HOST }}
           username: ${{ secrets.MIKRUS_USER }}
           key: ${{ secrets.MIKRUS_SSH_KEY }}
           port: ${{ secrets.MIKRUS_PORT }}
-          source: "dist/apps/Chronoco dist/chronoco-api"
+          source: "dist/apps/Chronoco"
+          target: "/home/deploy/apps/chronoco-github-actions"
+      
+      - name: Deploy API
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.MIKRUS_HOST }}
+          username: ${{ secrets.MIKRUS_USER }}
+          key: ${{ secrets.MIKRUS_SSH_KEY }}
+          port: ${{ secrets.MIKRUS_PORT }}
+          source: "dist/chronoco-api"
           target: "/home/deploy/apps/chronoco-github-actions"
       
       - name: Restart PM2 on Mikrus
