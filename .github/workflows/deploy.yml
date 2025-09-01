@@ -48,7 +48,7 @@ jobs:
           key: ${{ secrets.MIKRUS_SSH_KEY }}
           port: ${{ secrets.MIKRUS_PORT }}
           source: "dist/chronoco-api/*"
-          target: "/home/deploy/apps/chronoco-github-actions"
+          target: "/home/deploy/apps/chronoco-backend"
       
       - name: Restart PM2 on Mikrus
         uses: appleboy/ssh-action@v1.0.0
@@ -58,5 +58,6 @@ jobs:
           key: ${{ secrets.MIKRUS_SSH_KEY }}
           port: ${{ secrets.MIKRUS_PORT }}
           script: |
-            cd /home/deploy/apps/chronoco-github-actions/dist/chronoco-api
+            cd /home/deploy/apps/chronoco-backend/dist/chronoco-api
+            npm install
             pm2 restart api || pm2 start main.js --name api
