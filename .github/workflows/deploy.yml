@@ -40,6 +40,19 @@ jobs:
           source: "dist/apps/Chronoco"
           target: "/home/deploy/apps/chronoco-github-actions"
 
+      - name: Restart PM2 on Mikrus
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.MIKRUS_HOST }}
+          username: ${{ secrets.MIKRUS_USER }}
+          key: ${{ secrets.MIKRUS_SSH_KEY }}
+          port: ${{ secrets.MIKRUS_PORT }}
+          script: |
+            cd /home/deploy/apps/chronoco-github-actions/dist/apps/Chronoco/server
+            echo "Restarting PM2 process..."
+            pm2 delete CHRONOCO_ANGULAR
+            pm2 start server.mjs --name CHRONOCO_ANGULAR
+
       - name: Deploy API
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -77,7 +90,7 @@ jobs:
             echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env
             echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
 
-      - name: Restart PM2 on Mikrus
+      - name: Restart PM2 for API on Mikrus
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.MIKRUS_HOST }}
@@ -87,5 +100,5 @@ jobs:
           script: |
             cd /home/deploy/apps/chronoco-backend/dist/chronoco-api
             echo "Restarting PM2 process..."
-            pm2 delete api
-            pm2 start main.js --name api
+            pm2 delete CHRONOCO_API
+            pm2 start main.js --name CHRONOCO_API
