@@ -19,7 +19,11 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, documentFactory);
 
   app.enableCors({
-    origin: 'http://localhost:4200',
+    origin: [
+      'http://localhost:4200',
+      'https://dev122.pl',
+      /\.dev122\.pl$/,
+    ],
     credentials: true,
   });
 

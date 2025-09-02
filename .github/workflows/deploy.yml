@@ -89,6 +89,7 @@ jobs:
             echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
             echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env
             echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+            echo "HTTPS_COOKIES_SECURE=${{ secrets.HTTPS_COOKIES_SECURE }}" >> .env
 
       - name: Restart PM2 for API on Mikrus
         uses: appleboy/ssh-action@v1.0.0
