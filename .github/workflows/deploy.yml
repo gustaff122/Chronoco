@@ -51,7 +51,7 @@ jobs:
             cd /home/deploy/apps/chronoco-github-actions/dist/apps/Chronoco/server
             echo "Restarting PM2 process..."
             pm2 delete CHRONOCO_ANGULAR
-            pm2 start server.mjs --name CHRONOCO_ANGULAR
+            pm2 start "node server.mjs" --name CHRONOCO_ANGULAR
 
       - name: Deploy API
         uses: appleboy/scp-action@v0.1.7
