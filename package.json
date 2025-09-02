@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "start:fe": "nx serve Chronoco",
+    "start:fe:prod": "nx serve Chronoco --configuration=production",
     "start:api": "nx serve chronoco-api"
   },
   "private": true,
