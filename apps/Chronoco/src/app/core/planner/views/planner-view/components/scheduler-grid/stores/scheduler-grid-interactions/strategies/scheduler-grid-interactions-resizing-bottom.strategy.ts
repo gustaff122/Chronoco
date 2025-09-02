@@ -19,6 +19,8 @@ export class SchedulerGridInteractionsResizingBottomStrategy implements IInterac
         endTime: ctx.originalPosition.startTime,
       };
 
+      if (this.hasNoDuration(newPosition.startTime, newPosition.endTime)) return;
+
       ctx.instancesStore.update(ctx.activeInstanceId, newPosition);
     } else {
       const newPosition = {
@@ -27,5 +29,9 @@ export class SchedulerGridInteractionsResizingBottomStrategy implements IInterac
 
       ctx.instancesStore.update(ctx.activeInstanceId, newPosition);
     }
+  }
+
+  private hasNoDuration(startTime: Date, endTime: Date): boolean {
+    return startTime.toISOString() === endTime.toISOString();
   }
 }
