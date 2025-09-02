@@ -8,7 +8,7 @@
     [class.shadow-blue-400]="block()?.id === currentFoundInstance()?.id"
     class="w-full h-full overflow-hidden rounded-lg border border-solid border-gray-500  {{ showDuration ? 'p-3' : 'px-3 flex items-center' }} {{ legend()?.type | appSchedulerBlockTypeColor }}"
   >
-    <p class="text-xs font-medium text-gray-800">
+    <p class="text-xs font-medium text-gray-800 {{ !showDescription && 'line-clamp-1' }}">
       {{ legend()?.name }}
     </p>
 

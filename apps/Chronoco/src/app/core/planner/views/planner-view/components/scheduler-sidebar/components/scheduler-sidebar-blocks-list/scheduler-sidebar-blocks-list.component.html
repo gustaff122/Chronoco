@@ -14,9 +14,9 @@
 @if (!isRolledUp()) {
   <ul>
     @for (item of legends(); track item.id) {
-      <li class="text-sm gap-x-2 mt-1.5 flex items-center">
+      <li class="text-sm gap-x-2 mt-1.5 flex items-center w-full">
         <ng-icon (click)="openEditLegendModalHandler(item)" class="text-base cursor-pointer" name="heroPencilSquare"/>
-        <span (click)="selectItemHandler(item.id)" [class]="item.id === selectedLegendBlock()?.id ? 'text-blue-400 mt-0.5 cursor-pointer' : 'text-gray-400 mt-0.5 cursor-pointer'">{{ item.name }}</span>
+        <span class="line-clamp-1 w-full" (click)="selectItemHandler(item.id)" [class]="item.id === selectedLegendBlock()?.id ? 'text-blue-400 mt-0.5 cursor-pointer' : 'text-gray-400 mt-0.5 cursor-pointer'">{{ item.name }}</span>
       </li>
     }
   </ul>
