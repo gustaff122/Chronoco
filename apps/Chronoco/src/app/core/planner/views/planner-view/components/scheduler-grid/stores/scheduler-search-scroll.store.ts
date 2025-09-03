@@ -35,6 +35,8 @@ export class SchedulerSearchScrollStore {
   public readonly foundInstancesCount: Signal<number> = computed(() => this.foundInstances()?.length);
 
   public scrollToNextInstance(): void {
+    if (this.foundInstancesCount() === 0) return;
+
     if (this.currentFoundInstanceNumber() < this.foundInstancesCount()) {
       this._currentFoundInstanceNumber.update(state => state + 1);
     } else {

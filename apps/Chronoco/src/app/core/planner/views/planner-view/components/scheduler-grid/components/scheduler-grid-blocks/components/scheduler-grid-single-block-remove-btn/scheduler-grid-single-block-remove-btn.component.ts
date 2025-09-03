@@ -4,6 +4,7 @@ import { heroTrash } from '@ng-icons/heroicons/outline';
 import { Dialog } from '@angular/cdk/dialog';
 import { SchedulerInstancesStore } from '../../../../stores/scheduler-instances.store';
 import { IInstance } from '@chronoco-fe/models/i-legend';
+import { SchedulerSearchScrollStore } from '../../../../stores/scheduler-search-scroll.store';
 
 @Component({
   selector: 'app-scheduler-grid-single-block-remove-btn',
@@ -21,6 +22,7 @@ export class SchedulerGridSingleBlockRemoveBtnComponent {
 
   private readonly dialog: Dialog = inject(Dialog);
   private readonly instancesStore: SchedulerInstancesStore = inject(SchedulerInstancesStore);
+  private readonly searchScrollStore: SchedulerSearchScrollStore = inject(SchedulerSearchScrollStore);
 
   public openModalHandler(): void {
     import('@chronoco-fe/modals/scheduler-grid-single-block-remove-modal/scheduler-grid-single-block-remove-modal.component').then(({ SchedulerGridSingleBlockRemoveModalComponent }) => {
@@ -30,6 +32,10 @@ export class SchedulerGridSingleBlockRemoveBtnComponent {
           {
             provide: SchedulerInstancesStore,
             useValue: this.instancesStore,
+          },
+          {
+            provide: SchedulerSearchScrollStore,
+            useValue: this.searchScrollStore,
           },
         ],
       });
