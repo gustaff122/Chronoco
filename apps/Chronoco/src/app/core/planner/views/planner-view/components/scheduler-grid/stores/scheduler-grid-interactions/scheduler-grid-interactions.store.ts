@@ -233,7 +233,10 @@ export class SchedulerGridInteractionsStore implements IInteractionContext {
       mousePos.y,
     );
 
-    const clickedInstance = clickedInstances[0];
+    const clickedInstance = clickedInstances.reduce(
+      (prev, curr) => (prev.zIndex > curr.zIndex ? prev : curr),
+      clickedInstances[0],
+    );
 
     if (clickedInstance) {
       this.startInstanceInteraction(clickedInstance, mousePos, event);
