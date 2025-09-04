@@ -5,6 +5,7 @@ import { SchedulerSearchScrollStore } from '../../../../stores/scheduler-search-
 import { DurationInMinutesPipe } from '@chronoco-fe/pipes/scheduler-duration-in-minutes.pipe';
 import { SchedulerLegendStore } from '../../../../stores/scheduler-legend.store';
 import { SchedulerBlockTypeColorPipe } from '@chronoco-fe/pipes/scheduler-block-type-color.pipe';
+import { TooltipDirective } from '@chronoco-fe/ui/tooltip/tooltip.directive';
 
 @Component({
   selector: 'app-scheduler-grid-single-block',
@@ -12,6 +13,7 @@ import { SchedulerBlockTypeColorPipe } from '@chronoco-fe/pipes/scheduler-block-
     DatePipe,
     DurationInMinutesPipe,
     SchedulerBlockTypeColorPipe,
+    TooltipDirective,
   ],
   templateUrl: './scheduler-grid-single-block.component.html',
   styleUrl: './scheduler-grid-single-block.component.css',
