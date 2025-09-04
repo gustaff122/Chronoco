@@ -7,6 +7,7 @@ import { LegendType } from '@chronoco-fe/models/legend-type.enum';
 import { ILegend } from '@chronoco-fe/models/i-legend';
 import { SchedulerLegendStore } from '../../../scheduler-grid/stores/scheduler-legend.store';
 import { Dialog } from '@angular/cdk/dialog';
+import { TooltipDirective } from '@chronoco-fe/ui/tooltip/tooltip.directive';
 
 @Component({
   selector: 'app-scheduler-sidebar-blocks-list',
@@ -14,6 +15,7 @@ import { Dialog } from '@angular/cdk/dialog';
     SchedulerTranslateBlockTypePipe,
     NgIcon,
     SchedulerBlockTypeColorIntensePipe,
+    TooltipDirective,
   ],
   templateUrl: './scheduler-sidebar-blocks-list.component.html',
   styleUrl: './scheduler-sidebar-blocks-list.component.css',
