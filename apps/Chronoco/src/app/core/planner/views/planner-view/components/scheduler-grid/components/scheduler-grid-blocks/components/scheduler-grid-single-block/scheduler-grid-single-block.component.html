@@ -10,8 +10,7 @@
   >
     <p
       [appTooltip]="legend()?.name"
-      [appTooltipShowOnlyOnEllipsis]="true"
-      class="text-xs font-medium text-gray-800 {{ !showDescription ? 'line-clamp-1' : '' }}"
+      class="text-xs font-medium text-gray-800 {{ showDescription ? '' : 'line-clamp-1 bg-red-300' }}"
     >
       {{ legend()?.name }}
     </p>
