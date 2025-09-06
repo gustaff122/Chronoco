@@ -1,8 +1,13 @@
-<div
-  class="relative w-fit max-w-48 rounded-lg px-2 py-1.5 text-xs shadow-lg z-2xl
+@if (isInitialized()) {
+  <div
+    animate.enter='tooltip'
+    animate.leave="tooltip-leaving"
+    class="relative w-fit max-w-48 rounded-lg px-2 py-1.5 text-xs shadow-lg z-2xl
          before:absolute before:left-1/2 before:-translate-x-1/2 before:border-8 before:border-transparent
          {{ theme() === 'dark' && 'bg-gray-900 text-white before:bottom-full before:border-b-gray-900' }}
          {{ theme() === 'light' && 'bg-white text-gray-900 ring-1 ring-gray-300 before:bottom-full before:border-b-white' }}"
->
-  {{ text() }}
-</div>
+  >
+    {{ text() }}
+  </div>
+
+}
