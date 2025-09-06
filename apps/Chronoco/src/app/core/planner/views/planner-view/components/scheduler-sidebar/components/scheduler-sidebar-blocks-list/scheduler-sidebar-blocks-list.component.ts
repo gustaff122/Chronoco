@@ -8,6 +8,7 @@ import { ILegend } from '@chronoco-fe/models/i-legend';
 import { SchedulerLegendStore } from '../../../scheduler-grid/stores/scheduler-legend.store';
 import { Dialog } from '@angular/cdk/dialog';
 import { TooltipDirective } from '@chronoco-fe/ui/tooltip/tooltip.directive';
+import { SchedulerInstancesStore } from '../../../scheduler-grid/stores/scheduler-instances.store';
 
 @Component({
   selector: 'app-scheduler-sidebar-blocks-list',
@@ -27,6 +28,7 @@ export class SchedulerSidebarBlocksListComponent {
   public blocksType: InputSignal<LegendType> = input.required();
 
   private readonly legendStore: SchedulerLegendStore = inject(SchedulerLegendStore);
+  private readonly instancesStore: SchedulerInstancesStore = inject(SchedulerInstancesStore);
   private readonly dialog: Dialog = inject(Dialog);
 
   public readonly legends: Signal<ILegend[]> = computed(() => this.legendStore.filteredLegends().filter(({ type }) => type === this.blocksType()));
@@ -51,6 +53,10 @@ export class SchedulerSidebarBlocksListComponent {
           {
             provide: SchedulerLegendStore,
             useValue: this.legendStore,
+          },
+          {
+            provide: SchedulerInstancesStore,
+            useValue: this.instancesStore,
           },
         ],
       });

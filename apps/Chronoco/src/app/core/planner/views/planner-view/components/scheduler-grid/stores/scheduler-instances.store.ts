@@ -37,6 +37,10 @@ export class SchedulerInstancesStore {
     this._instances.update(state => (state.filter(instance => instance.id !== instanceId)));
   }
 
+  public deleteByLegendId(legendId: string): void {
+    this._instances.update(state => (state.filter((instance) => instance.legendId !== legendId)));
+  }
+
   public findAtPosition(
     x: number,
     y: number,

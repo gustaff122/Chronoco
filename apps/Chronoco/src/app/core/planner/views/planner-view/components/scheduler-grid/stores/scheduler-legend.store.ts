@@ -39,8 +39,10 @@ export class SchedulerLegendStore {
 
   public updateLegendDefinition(legendId: string, updates: Partial<Omit<ILegend, 'id'>>): void {
     this._legendBlocks.update(state => state.map(el => el.id === legendId ? { ...el, ...updates } : el));
+  }
 
-    console.log(this._legendBlocks());
+  public deleteLegendDefinition(legendId: string): void {
+    this._legendBlocks.update(state => state.filter(({ id }) => id !== legendId));
   }
 
   public selectLegendForDrawing(legendId: string): void {

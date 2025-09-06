@@ -11,6 +11,7 @@ import { SchedulerSearchStore } from '../scheduler-grid/stores/scheduler-search.
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroChevronLeft, heroChevronRight } from '@ng-icons/heroicons/outline';
 import { SchedulerSearchScrollStore } from '../scheduler-grid/stores/scheduler-search-scroll.store';
+import { SchedulerInstancesStore } from '../scheduler-grid/stores/scheduler-instances.store';
 
 interface ISearchForm {
   search: FormControl<string>;
@@ -35,6 +36,7 @@ export class SchedulerSidebarComponent implements OnInit {
   private readonly dialog: Dialog = inject(Dialog);
   private readonly legendStore: SchedulerLegendStore = inject(SchedulerLegendStore);
   private readonly searchStore: SchedulerSearchStore = inject(SchedulerSearchStore);
+  private readonly instancesStore: SchedulerInstancesStore = inject(SchedulerInstancesStore);
   private readonly formBuilder: FormBuilder = inject(FormBuilder);
   private readonly destroyRef: DestroyRef = inject(DestroyRef);
   private readonly searchScrollStore: SchedulerSearchScrollStore = inject(SchedulerSearchScrollStore);
@@ -68,6 +70,10 @@ export class SchedulerSidebarComponent implements OnInit {
           {
             provide: SchedulerLegendStore,
             useValue: this.legendStore,
+          },
+          {
+            provide: SchedulerInstancesStore,
+            useValue: this.instancesStore,
           },
         ],
       });
