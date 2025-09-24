@@ -51,8 +51,6 @@ export class SchedulerSidebarComponent implements OnInit {
   public ngOnInit(): void {
     this.buildForm();
     this.initFormListener();
-
-    this.legendStore.createLegendDefinition('Scheduler', LegendType.LECTURE, null);
   }
 
   public scrollToNextInstanceHandler(): void {
