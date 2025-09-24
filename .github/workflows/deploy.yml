@@ -38,7 +38,7 @@ jobs:
           key: ${{ secrets.MIKRUS_SSH_KEY }}
           port: ${{ secrets.MIKRUS_PORT }}
           source: "dist/apps/Chronoco"
-          target: "/home/deploy/apps/chronoco-github-actions"
+          target: "/home/kakkoii/apps/chronoco-github-actions"
 
       - name: Restart PM2 on Mikrus
         uses: appleboy/ssh-action@v1.0.0
@@ -48,7 +48,7 @@ jobs:
           key: ${{ secrets.MIKRUS_SSH_KEY }}
           port: ${{ secrets.MIKRUS_PORT }}
           script: |
-            cd /home/deploy/apps/chronoco-github-actions/dist/apps/Chronoco/server
+            cd /home/kakkoii/apps/chronoco-github-actions/dist/apps/Chronoco/server
             echo "Restarting PM2 process..."
             pm2 delete CHRONOCO_ANGULAR
             pm2 start "node server.mjs" --name CHRONOCO_ANGULAR
@@ -61,7 +61,7 @@ jobs:
           key: ${{ secrets.MIKRUS_SSH_KEY }}
           port: ${{ secrets.MIKRUS_PORT }}
           source: "dist/chronoco-api/*"
-          target: "/home/deploy/apps/chronoco-backend"
+          target: "/home/kakkoii/apps/chronoco-backend"
 
       - name: Install backend dependencies on Mikrus
         uses: appleboy/ssh-action@v1.0.0
@@ -71,7 +71,7 @@ jobs:
           key: ${{ secrets.MIKRUS_SSH_KEY }}
           port: ${{ secrets.MIKRUS_PORT }}
           script: |
-            cd /home/deploy/apps/chronoco-backend/dist/chronoco-api
+            cd /home/kakkoii/apps/chronoco-backend/dist/chronoco-api
             echo "Running npm install..."
             npm install --force
 
@@ -99,7 +99,7 @@ jobs:
           key: ${{ secrets.MIKRUS_SSH_KEY }}
           port: ${{ secrets.MIKRUS_PORT }}
           script: |
-            cd /home/deploy/apps/chronoco-backend/dist/chronoco-api
+            cd /home/kakkoii/apps/chronoco-backend/dist/chronoco-api
             echo "Restarting PM2 process..."
             pm2 delete CHRONOCO_API
             pm2 start main.js --name CHRONOCO_API
