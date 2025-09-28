@@ -42,10 +42,10 @@ export class PlannersGateway implements OnGatewayDisconnect {
   }
 
   public handleDisconnect(client: Socket): void {
-    const { planId, username } = client.data ?? {};
-    if (!planId || !username) return;
+    const { planId, user } = client.data ?? {};
+    if (!planId || !user) return;
 
-    this.presence.leave(planId, username);
-    this.server.to(`plan_${planId}`).emit(PlannersSocketMessages.USER_LEFT, { username });
+    this.presence.leave(planId, user);
+    this.server.to(`plan_${planId}`).emit(PlannersSocketMessages.USER_LEFT, { username: user.name });
   }
 }
