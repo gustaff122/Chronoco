@@ -1,13 +1,13 @@
 import { ElementRef, inject, Injectable, Signal } from '@angular/core';
 import { IInstance, IInstancePosition, IOperationalInstance } from '@chronoco-fe/models/i-legend';
 import { SchedulerInstancesStore } from '../scheduler-instances.store';
-import { SchedulerGridComponentStore } from '../../scheduler-grid.component.store';
 import { SchedulerGridScrollStore } from '../scheduler-grid-scroll.store';
 import { SchedulerLegendStore } from '../scheduler-legend.store';
 import { InteractionMode } from './models/interaction-mode-enum';
 import { IInteractionContext } from './models/i-interaction-context';
 import { InteractionStrategyRegistry } from './scheduler-grid-interactions-strategies.registry';
 import { SchedulerGridListenersStore } from '../scheduler-grid-listeners.store';
+import { SchedulerGridComponentStore } from '../../components/scheduler-grid/scheduler-grid.component.store';
 
 @Injectable()
 export class SchedulerGridInteractionsStore implements IInteractionContext {

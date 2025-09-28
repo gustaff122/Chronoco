@@ -3,16 +3,16 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } 
 import { LegendType } from '@chronoco-fe/models/legend-type.enum';
 import { SchedulerTranslateBlockTypePipe } from '../../pipes/scheduler-translate-block-type.pipe';
 import { ModalComponent } from '../../ui/modal/modal.component';
-import { SchedulerLegendStore } from '@chronoco-fe/core/planner/views/planner-view/components/scheduler-grid/stores/scheduler-legend.store';
+import { CdkConnectedOverlay, CdkOverlayOrigin } from '@angular/cdk/overlay';
 import { ButtonComponent } from '@chronoco-fe/ui/button/button.component';
 import { SelectInputComponent } from '@chronoco-fe/ui/select-input/select-input.component';
-import { ISelectOption } from '@chronoco-fe/models/i-select-option';
-import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { InputComponent } from '@chronoco-fe/ui/input/input.component';
 import { TextareaComponent } from '@chronoco-fe/ui/textarea/textarea.component';
 import { ILegend } from '@chronoco-fe/models/i-legend';
-import { CdkConnectedOverlay, CdkOverlayOrigin } from '@angular/cdk/overlay';
-import { SchedulerInstancesStore } from '@chronoco-fe/core/planner/views/planner-view/components/scheduler-grid/stores/scheduler-instances.store';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { SchedulerLegendStore } from '@chronoco-fe/core/planner/views/planner-view/stores/scheduler-legend.store';
+import { SchedulerInstancesStore } from '@chronoco-fe/core/planner/views/planner-view/stores/scheduler-instances.store';
+import { ISelectOption } from '@chronoco-fe/models/i-select-option';
 
 interface IAddLegendForm {
   name: FormControl<string>;

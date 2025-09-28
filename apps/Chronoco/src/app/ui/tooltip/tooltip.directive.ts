@@ -10,6 +10,7 @@ export class TooltipDirective implements OnInit, OnDestroy {
   public appTooltip: InputSignal<string> = input.required();
   public appTooltipTheme: InputSignal<TooltipTheme> = input('dark' as TooltipTheme);
   public appTooltipOffsetY: InputSignal<number> = input(15);
+  public appTooltipOffsetX: InputSignal<number> = input(0);
 
   //TODO
   public appTooltipShowOnlyOnEllipsis: InputSignal<boolean> = input(false);
@@ -50,7 +51,7 @@ export class TooltipDirective implements OnInit, OnDestroy {
     if (left + tooltipEl.offsetWidth > parentRect.right + window.scrollX)
       left = parentRect.right + window.scrollX - tooltipEl.offsetWidth;
 
-    tooltipEl.style.left = `${left}px`;
+    tooltipEl.style.left = `${left + this.appTooltipOffsetX()}px`;
     document.body.appendChild(tooltipEl);
   }
 

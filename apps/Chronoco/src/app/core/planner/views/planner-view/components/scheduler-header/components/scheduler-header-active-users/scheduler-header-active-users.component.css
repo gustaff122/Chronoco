@@ -1,0 +1,12 @@
+.user-bubble {
+  opacity: 1;
+  transition: opacity 0.2s ease-in-out;
+
+  @starting-style {
+    opacity: 0;
+  }
+}
+
+.user-bubble-leaving {
+  opacity: 0
+}

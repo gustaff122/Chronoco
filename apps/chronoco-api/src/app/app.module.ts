@@ -5,6 +5,7 @@ import { Module } from '@nestjs/common';
 import { Users } from './entities/users.entity';
 import { Events } from './entities/events.entity';
 import { EventsModule } from './modules/events/events.module';
+import { PlannersModule } from './modules/planners/planners.module';
 
 const ENTITIES = [
   Users,
@@ -14,6 +15,7 @@ const ENTITIES = [
 const MODULES = [
   AuthModule,
   EventsModule,
+  PlannersModule,
 ];
 
 @Module({

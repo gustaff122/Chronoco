@@ -2,9 +2,9 @@ import { Component, inject, input, InputSignal } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroTrash } from '@ng-icons/heroicons/outline';
 import { Dialog } from '@angular/cdk/dialog';
-import { SchedulerInstancesStore } from '../../../../stores/scheduler-instances.store';
+import { SchedulerInstancesStore } from '../../../../../../stores/scheduler-instances.store';
 import { IInstance } from '@chronoco-fe/models/i-legend';
-import { SchedulerSearchScrollStore } from '../../../../stores/scheduler-search-scroll.store';
+import { SchedulerSearchScrollStore } from '../../../../../../stores/scheduler-search-scroll.store';
 
 @Component({
   selector: 'app-scheduler-grid-single-block-remove-btn',

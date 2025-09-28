@@ -1,10 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { ModalComponent } from '@chronoco-fe/ui/modal/modal.component';
-import { SchedulerInstancesStore } from '@chronoco-fe/core/planner/views/planner-view/components/scheduler-grid/stores/scheduler-instances.store';
+import { SchedulerInstancesStore } from '@chronoco-fe/core/planner/views/planner-view/stores/scheduler-instances.store';
+import { ButtonComponent } from '@chronoco-fe/ui/button/button.component';
 import { IInstance } from '@chronoco-fe/models/i-legend';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { ButtonComponent } from '@chronoco-fe/ui/button/button.component';
-import { SchedulerSearchScrollStore } from '@chronoco-fe/core/planner/views/planner-view/components/scheduler-grid/stores/scheduler-search-scroll.store';
+import { SchedulerSearchScrollStore } from '@chronoco-fe/core/planner/views/planner-view/stores/scheduler-search-scroll.store';
 
 @Component({
   selector: 'app-scheduler-grid-single-block-remove-modal',

@@ -1,17 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { SchedulerHeaderComponent } from './components/scheduler-header/scheduler-header.component';
 import { SchedulerGridComponent } from './components/scheduler-grid/scheduler-grid.component';
 import { SchedulerSidebarComponent } from './components/scheduler-sidebar/scheduler-sidebar.component';
 import { IRoom } from '@chronoco-fe/models/i-room';
-import { SchedulerInstancesStore } from './components/scheduler-grid/stores/scheduler-instances.store';
-import { SchedulerLegendStore } from './components/scheduler-grid/stores/scheduler-legend.store';
+import { PlannersSocketService } from './services/planners-socket.service';
+import { SchedulerGridScrollStore } from './stores/scheduler-grid-scroll.store';
 import { SchedulerGridComponentStore } from './components/scheduler-grid/scheduler-grid.component.store';
-import { SchedulerGridScrollStore } from './components/scheduler-grid/stores/scheduler-grid-scroll.store';
-import { SchedulerGridInteractionsStore } from './components/scheduler-grid/stores/scheduler-grid-interactions/scheduler-grid-interactions.store';
-import { SchedulerGridListenersStore } from './components/scheduler-grid/stores/scheduler-grid-listeners.store';
-import { SchedulerGridDayScrollingStore } from './components/scheduler-grid/stores/scheduler-grid-day-scrolling.store';
-import { SchedulerSearchStore } from './components/scheduler-grid/stores/scheduler-search.store';
-import { SchedulerSearchScrollStore } from './components/scheduler-grid/stores/scheduler-search-scroll.store';
+import { SchedulerLegendStore } from './stores/scheduler-legend.store';
+import { SchedulerInstancesStore } from './stores/scheduler-instances.store';
+import { SchedulerGridInteractionsStore } from './stores/scheduler-grid-interactions/scheduler-grid-interactions.store';
+import { SchedulerGridDayScrollingStore } from './stores/scheduler-grid-day-scrolling.store';
+import { SchedulerGridListenersStore } from './stores/scheduler-grid-listeners.store';
+import { SchedulerSearchStore } from './stores/scheduler-search.store';
+import { SchedulerSearchScrollStore } from './stores/scheduler-search-scroll.store';
+import { SchedulerPresenceStore } from './stores/scheduler-presence.store';
 
 @Component({
   selector: 'app-planner-view',
@@ -32,9 +34,17 @@ import { SchedulerSearchScrollStore } from './components/scheduler-grid/stores/s
     SchedulerGridListenersStore,
     SchedulerSearchStore,
     SchedulerSearchScrollStore,
+    PlannersSocketService,
+    SchedulerPresenceStore,
   ],
 })
 export class PlannerViewComponent {
+  private readonly socketService: PlannersSocketService = inject(PlannersSocketService);
+
+  constructor() {
+    this.socketService.init();
+  }
+
   public rooms: IRoom[] = [
     { name: 'Room 1', location: 'Piętro I' },
     { name: 'Room 2', location: 'Piętro I' },

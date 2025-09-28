@@ -3,9 +3,10 @@ import { provideIcons } from '@ng-icons/core';
 import { heroArrowDownTray, heroArrowUpTray, heroShare } from '@ng-icons/heroicons/outline';
 import { ButtonIconComponent } from '@chronoco-fe/ui/button-icon/button-icon.component';
 import { RowSelectorComponent } from '@chronoco-fe/ui/row-selector/row-selector.component';
-import { SchedulerGridDayScrollingStore } from '../scheduler-grid/stores/scheduler-grid-day-scrolling.store';
 import { ISelectOption } from '@chronoco-fe/models/i-select-option';
 import { FormsModule } from '@angular/forms';
+import { SchedulerGridDayScrollingStore } from '../../stores/scheduler-grid-day-scrolling.store';
+import { SchedulerHeaderActiveUsersComponent } from './components/scheduler-header-active-users/scheduler-header-active-users.component';
 
 @Component({
   selector: 'app-scheduler-header',
@@ -15,6 +16,7 @@ import { FormsModule } from '@angular/forms';
     ButtonIconComponent,
     RowSelectorComponent,
     FormsModule,
+    SchedulerHeaderActiveUsersComponent,
   ],
   viewProviders: [
     provideIcons({ heroArrowUpTray, heroArrowDownTray, heroShare }),

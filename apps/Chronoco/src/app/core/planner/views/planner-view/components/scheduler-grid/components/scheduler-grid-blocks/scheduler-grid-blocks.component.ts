@@ -3,12 +3,12 @@ import { SchedulerGridSingleBlockComponent } from './components/scheduler-grid-s
 import { SchedulerGridComponentStore } from '../../scheduler-grid.component.store';
 import { IRoom } from '@chronoco-fe/models/i-room';
 import { IInstance, IOperationalInstance } from '@chronoco-fe/models/i-legend';
-import { SchedulerInstancesStore } from '../../stores/scheduler-instances.store';
-import { SchedulerGridScrollStore } from '../../stores/scheduler-grid-scroll.store';
-import { SchedulerGridInteractionsStore } from '../../stores/scheduler-grid-interactions/scheduler-grid-interactions.store';
-import { SchedulerSearchStore } from '../../stores/scheduler-search.store';
 import { SchedulerGridSingleBlockRemoveBtnComponent } from './components/scheduler-grid-single-block-remove-btn/scheduler-grid-single-block-remove-btn.component';
-import { SchedulerLegendStore } from '../../stores/scheduler-legend.store';
+import { SchedulerInstancesStore } from '../../../../stores/scheduler-instances.store';
+import { SchedulerGridInteractionsStore } from '../../../../stores/scheduler-grid-interactions/scheduler-grid-interactions.store';
+import { SchedulerSearchStore } from '../../../../stores/scheduler-search.store';
+import { SchedulerLegendStore } from '../../../../stores/scheduler-legend.store';
+import { SchedulerGridScrollStore } from '../../../../stores/scheduler-grid-scroll.store';
 
 
 @Component({

@@ -1,11 +1,11 @@
 import { Component, computed, inject, input, InputSignal, Signal } from '@angular/core';
 import { IInstance, ILegend } from '@chronoco-fe/models/i-legend';
 import { DatePipe } from '@angular/common';
-import { SchedulerSearchScrollStore } from '../../../../stores/scheduler-search-scroll.store';
-import { DurationInMinutesPipe } from '@chronoco-fe/pipes/scheduler-duration-in-minutes.pipe';
-import { SchedulerLegendStore } from '../../../../stores/scheduler-legend.store';
 import { SchedulerBlockTypeColorPipe } from '@chronoco-fe/pipes/scheduler-block-type-color.pipe';
 import { TooltipDirective } from '@chronoco-fe/ui/tooltip/tooltip.directive';
+import { DurationInMinutesPipe } from '@chronoco-fe/pipes/scheduler-duration-in-minutes.pipe';
+import { SchedulerSearchScrollStore } from '../../../../../../stores/scheduler-search-scroll.store';
+import { SchedulerLegendStore } from '../../../../../../stores/scheduler-legend.store';
 
 @Component({
   selector: 'app-scheduler-grid-single-block',

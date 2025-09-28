@@ -1,9 +1,9 @@
 import { computed, DestroyRef, inject, Injectable, signal, Signal, WritableSignal } from '@angular/core';
-import { SchedulerGridComponentStore } from '../scheduler-grid.component.store';
 import { ISelectOption } from '@chronoco-fe/models/i-select-option';
 import { SchedulerGridScrollStore } from './scheduler-grid-scroll.store';
 import { fromEvent, map, startWith } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { SchedulerGridComponentStore } from '../components/scheduler-grid/scheduler-grid.component.store';
 
 @Injectable()
 export class SchedulerGridDayScrollingStore {

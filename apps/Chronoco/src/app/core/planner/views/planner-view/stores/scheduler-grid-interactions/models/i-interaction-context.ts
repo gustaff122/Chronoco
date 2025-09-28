@@ -1,6 +1,6 @@
 import { IInstancePosition } from '@chronoco-fe/models/i-legend';
 import { SchedulerInstancesStore } from '../../scheduler-instances.store';
-import { SchedulerGridComponentStore } from '../../../scheduler-grid.component.store';
+import { SchedulerGridComponentStore } from '../../../components/scheduler-grid/scheduler-grid.component.store';
 
 export interface IInteractionContext {
   activeInstanceId: string;

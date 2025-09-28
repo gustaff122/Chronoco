@@ -1,0 +1,15 @@
+<div class="flex items-center gap-x-1">
+  @for (username of presentUsers(); track username) {
+    <app-scheduler-header-active-users-item [user]="username"/>
+  }
+
+  @if (moreUsersAmount() > 0) {
+    <div
+      animate.enter="user-bubble"
+      animate.leave="user-bubble-leaving"
+      class="w-8 h-8 font-bold text-orange-700 text-sm rounded-full flex justify-center items-center bg-orange-300"
+    >
+      +{{ moreUsersAmount() }}
+    </div>
+  }
+</div>

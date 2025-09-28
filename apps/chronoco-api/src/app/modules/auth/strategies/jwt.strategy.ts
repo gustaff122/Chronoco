@@ -8,7 +8,26 @@ import { AuthService } from '../auth.service';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly authService: AuthService) {
     super({
-      jwtFromRequest: (req: Request) => req?.cookies?.['access_token'] || null,
+      jwtFromRequest: (req: Request & { handshake?: any }) => {
+        // ✅ HTTP request
+        if (req?.cookies?.['access_token']) {
+          return req.cookies['access_token'];
+        }
+
+        // ✅ WebSocket handshake
+        const cookieHeader: string | undefined = req?.handshake?.headers?.cookie;
+        if (cookieHeader) {
+          const cookies = Object.fromEntries(
+            cookieHeader.split(';').map(c => {
+              const [ k, v ] = c.trim().split('=');
+              return [ k, decodeURIComponent(v) ];
+            }),
+          );
+          return cookies['access_token'];
+        }
+
+        return null;
+      },
       secretOrKey: process.env['JWT_SECRET'],
       passReqToCallback: false,
     });

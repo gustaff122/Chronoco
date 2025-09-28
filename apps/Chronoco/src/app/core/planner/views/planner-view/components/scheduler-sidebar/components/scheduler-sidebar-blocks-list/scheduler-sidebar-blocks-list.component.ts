@@ -5,10 +5,10 @@ import { SchedulerBlockTypeColorIntensePipe } from '@chronoco-fe/pipes/scheduler
 import { SchedulerTranslateBlockTypePipe } from '@chronoco-fe/pipes/scheduler-translate-block-type.pipe';
 import { LegendType } from '@chronoco-fe/models/legend-type.enum';
 import { ILegend } from '@chronoco-fe/models/i-legend';
-import { SchedulerLegendStore } from '../../../scheduler-grid/stores/scheduler-legend.store';
-import { Dialog } from '@angular/cdk/dialog';
 import { TooltipDirective } from '@chronoco-fe/ui/tooltip/tooltip.directive';
-import { SchedulerInstancesStore } from '../../../scheduler-grid/stores/scheduler-instances.store';
+import { SchedulerLegendStore } from '../../../../stores/scheduler-legend.store';
+import { SchedulerInstancesStore } from '../../../../stores/scheduler-instances.store';
+import { Dialog } from '@angular/cdk/dialog';
 
 @Component({
   selector: 'app-scheduler-sidebar-blocks-list',

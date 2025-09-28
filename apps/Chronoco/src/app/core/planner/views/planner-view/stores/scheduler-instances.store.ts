@@ -1,7 +1,7 @@
 import { inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
 import { IInstance, IInstancePosition } from '@chronoco-fe/models/i-legend';
-import { SchedulerGridComponentStore } from '../scheduler-grid.component.store';
 import { ulid } from 'ulid';
+import { SchedulerGridComponentStore } from '../components/scheduler-grid/scheduler-grid.component.store';
 
 @Injectable()
 export class SchedulerInstancesStore {

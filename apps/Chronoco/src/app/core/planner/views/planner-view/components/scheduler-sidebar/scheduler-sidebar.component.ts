@@ -4,14 +4,14 @@ import { Dialog } from '@angular/cdk/dialog';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LegendType } from '@chronoco-fe/models/legend-type.enum';
-import { SchedulerLegendStore } from '../scheduler-grid/stores/scheduler-legend.store';
 import { ButtonComponent } from '@chronoco-fe/ui/button/button.component';
 import { InputComponent } from '@chronoco-fe/ui/input/input.component';
-import { SchedulerSearchStore } from '../scheduler-grid/stores/scheduler-search.store';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroChevronLeft, heroChevronRight } from '@ng-icons/heroicons/outline';
-import { SchedulerSearchScrollStore } from '../scheduler-grid/stores/scheduler-search-scroll.store';
-import { SchedulerInstancesStore } from '../scheduler-grid/stores/scheduler-instances.store';
+import { SchedulerLegendStore } from '../../stores/scheduler-legend.store';
+import { SchedulerSearchStore } from '../../stores/scheduler-search.store';
+import { SchedulerInstancesStore } from '../../stores/scheduler-instances.store';
+import { SchedulerSearchScrollStore } from '../../stores/scheduler-search-scroll.store';
 
 interface ISearchForm {
   search: FormControl<string>;

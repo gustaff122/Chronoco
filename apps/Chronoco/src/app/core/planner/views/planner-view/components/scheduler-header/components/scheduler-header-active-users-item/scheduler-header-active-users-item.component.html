@@ -1,0 +1,31 @@
+<div
+  (mouseenter)="openHandler()"
+  (mouseleave)="closeHandler()"
+  cdkOverlayOrigin
+  #trigger="cdkOverlayOrigin"
+  animate.enter="user-bubble"
+  animate.leave="user-bubble-leaving"
+  class="w-7 h-7 font-bold cursor-pointer text-blue-700 rounded-full text-xs flex justify-center items-center bg-blue-300 ">
+  {{ user() | appInitials }}
+</div>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="trigger"
+  [cdkConnectedOverlayOpen]="isOpen()"
+  (detach)="closeHandler()"
+>
+  <div
+    animate.enter="user-bubble"
+    animate.leave="user-bubble-leaving"
+    class="mt-3 bg-white flex gap-x-1.5 justify-center items-center border-solid border border-gray-300  text-gray-600 rounded-lg p-2"
+  >
+    <div class="w-7 h-7 font-bold text-blue-700 text-sm rounded flex justify-center items-center bg-blue-300">
+      {{ user() | appInitials }}
+    </div>
+
+    <span class="text-sm">
+      {{ user() }}
+    </span>
+  </div>
+</ng-template>

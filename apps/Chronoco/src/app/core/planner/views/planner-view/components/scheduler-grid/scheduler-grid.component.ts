@@ -7,7 +7,7 @@ import { SchedulerGridCellsComponent } from './components/scheduler-grid-cells/s
 import { SchedulerGridBlocksComponent } from './components/scheduler-grid-blocks/scheduler-grid-blocks.component';
 import { IRoom } from '@chronoco-fe/models/i-room';
 import { SchedulerGridBlockHeightPipe } from '@chronoco-fe/pipes/scheduler-grid-block-height.pipe';
-import { SchedulerGridScrollStore } from './stores/scheduler-grid-scroll.store';
+import { SchedulerGridScrollStore } from '../../stores/scheduler-grid-scroll.store';
 
 @Component({
   selector: 'app-scheduler-grid',
